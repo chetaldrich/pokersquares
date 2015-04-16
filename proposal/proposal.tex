@@ -44,7 +44,7 @@
 \author{
 \large
 \textsc{Danny Hanson and Chet Aldrich} \\
-\normalsize Carleton College \\ % Your institution
+\normalsize Carleton College \\
 \normalsize \href{mailto:aldrichc@carleton.edu}{aldrichc@carleton.edu},
 \normalsize \href{mailto:hansond@carleton.edu}{hansond@carleton.edu}
 \vspace{-5mm}
@@ -65,7 +65,7 @@
 
 \begin{abstract}
 
-\noindent In order to create a solver for parametrized poker squares, we will attempt to use
+\noindent In order to create a solver for parametrized poker squares, we will attempt to find an optimized rule-based approach using a genetic algorithm to evolve promising combinations of rules. Ideally, using parameterized rules, we can develop a strong general solution that can be seeded to increase the effectiveness and speed of the algorithm's learning curve and produce high scores given minimal time for preprocessing.
 
 \end{abstract}
 
@@ -79,8 +79,6 @@
 
 \lettrine[nindent=0em,lines=3]{T} he EAAI NSG Parameterized Poker Squares challenge takes a 5 $\times$ 5 grid where one can place cards, and with random draws from this deck, place cards such that the rows and columns of the grid make poker hands, with specific scores. The goal is to maximize the score based on cards you get, with one catch: you don't know the scoring system before you begin.
 
-
-
 %------------------------------------------------
 
 \section{Challenge Specifics}
@@ -92,7 +90,7 @@ Any number of scoring systems can be used, from the American and English scoring
 
 \section{Proposal}
 
-We hope to use a genetic algorithm in order to accomplish the above. The concept is that we can abstract in-game partial hands probabalistically, and then create a valuation function for each hand based on the parameterized input.
+We will attempt to use a genetic algorithm to optimize a rules-based approach. The concept is that we can abstract in-game partial hands (as part of a rules based approach), and then create a valuation function for each hand based on the parameterized input. From there, the abstractions can either be used or not used as part of the valuation function, and create many strings that denote using different game valuation abstractions randomly. By testing the fitness of each of the different strategies for valuation, the algorithm can evolve to use a more optimal strategy.
 
 %------------------------------------------------
 
@@ -102,20 +100,17 @@ We hope to use a genetic algorithm in order to accomplish the above. The concept
 
 \section{Implementation: Mid game}
 
-\subsection{Subsection One}
+\subsection{Rule-based Valuation Functions}
 
+\subsection{Evolving an Optimal Strategy}
 
-\subsection{Subsection Two}
-
+\subsection{Seeding with General Strategies}
 
 %------------------------------------------------
 
 \section{Implementation: Endgame}
 
-\subsection{Subsection One}
-
-
-\subsection{Subsection Two}
+\subsection{Feasible Search}
 
 
 %-----------------------------------------------------------------------------
