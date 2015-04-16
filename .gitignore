@@ -11,8 +11,17 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# OS generate Files
+# OS generated Files
 .DS_Store
 
 # Documentation available on the contest website:
 doc/
+
+# LaTeX output files
+*.log
+*.aux
+*.fdb_latexmk
+*.synctex.gz
+*.fls
+*.out
+*.pdf

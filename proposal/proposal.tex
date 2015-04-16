@@ -1,0 +1,140 @@
+\documentclass[twoside]{article}
+
+\usepackage{lipsum} % Package to generate dummy text throughout this template
+
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+
+\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
+\usepackage{multicol} % Used for the two-column layout of the document
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{booktabs} % Horizontal rules in tables
+\usepackage{float} % Required for tables and figures in the multi-column environment - they need to be placed in specific locations with the [H] (e.g. \begin{table}[H])
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+\usepackage{lettrine} % The lettrine is the first enlarged letter at the beginning of the text
+\usepackage{paralist} % Used for the compactitem environment which makes bullet points with less space between them
+
+\usepackage{abstract} % Allows abstract customization
+\renewcommand{\abstractname}{Summary} % Change "abstract" to "Summary"
+\renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+
+\usepackage{titlesec} % Allows customization of titles
+\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+\renewcommand\thesubsection{\Roman{subsection}} % Roman numerals for subsections
+\titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{} % Blank out the default header
+\fancyfoot{} % Blank out the default footer
+\fancyhead[C]{Project Proposal $\bullet$ April 2015} % Custom header text
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+%-----------------------------------------------------------------------------
+%	TITLE SECTION
+%-----------------------------------------------------------------------------
+
+\title{\vspace{-15mm}\fontsize{20pt}{10pt}\selectfont\textbf{Parameterized Poker Squares}} % Article title
+
+\author{
+\large
+\textsc{Danny Hanson and Chet Aldrich} \\
+\normalsize Carleton College \\ % Your institution
+\normalsize \href{mailto:aldrichc@carleton.edu}{aldrichc@carleton.edu},
+\normalsize \href{mailto:hansond@carleton.edu}{hansond@carleton.edu}
+\vspace{-5mm}
+}
+\date{}
+
+%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Insert title
+
+\thispagestyle{fancy} % All pages have headers and footers
+
+%-----------------------------------------------------------------------------
+%	SUMMARY
+%-----------------------------------------------------------------------------
+
+\begin{abstract}
+
+\noindent In order to create a solver for parametrized poker squares, we will attempt to use
+
+\end{abstract}
+
+%-----------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%-----------------------------------------------------------------------------
+
+\begin{multicols}{2} % Two-column layout throughout the main article text
+
+\section{Introduction}
+
+\lettrine[nindent=0em,lines=3]{T} he EAAI NSG Parameterized Poker Squares challenge takes a 5 $\times$ 5 grid where one can place cards, and with random draws from this deck, place cards such that the rows and columns of the grid make poker hands, with specific scores. The goal is to maximize the score based on cards you get, with one catch: you don't know the scoring system before you begin.
+
+
+
+%------------------------------------------------
+
+\section{Challenge Specifics}
+
+The challenge starts by selecting a scoring system, after which our program will have 5 minutes to perform appropriate preprocessing. Then, for each game, our poker squares player will be given 30 seconds of total time for play decision-making. A player taking more than 30 seconds of total time for play decision-making or making an illegal play will score 10 times the minimum hand point score for the game.
+
+Any number of scoring systems can be used, from the American and English scoring systems, which measure the difficulty of arriving at each hand in regular poker and specifically in poker solitaire respectively.
+%------------------------------------------------
+
+\section{Proposal}
+
+We hope to use a genetic algorithm in order to accomplish the above. The concept is that we can abstract in-game partial hands probabalistically, and then create a valuation function for each hand based on the parameterized input.
+
+%------------------------------------------------
+
+\section{Implementation: Early Game}
+
+%------------------------------------------------
+
+\section{Implementation: Mid game}
+
+\subsection{Subsection One}
+
+
+\subsection{Subsection Two}
+
+
+%------------------------------------------------
+
+\section{Implementation: Endgame}
+
+\subsection{Subsection One}
+
+
+\subsection{Subsection Two}
+
+
+%-----------------------------------------------------------------------------
+%	REFERENCE LIST
+%-----------------------------------------------------------------------------
+
+\begin{thebibliography}{99} % Bibliography: place potential sources here.
+
+%Typical item shown below.
+%\bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
+%Figueredo, A.~J. and Wolf, P. S.~A. (2009).
+%\newblock Assortative pairing and life history strategy - a cross-cultural
+%  study.
+%\newblock {\em Human Nature}, 20:317--330.
+
+\end{thebibliography}
+
+%-----------------------------------------------------------------------------
+
+\end{multicols}
+
+\end{document}
