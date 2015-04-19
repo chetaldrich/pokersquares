@@ -94,6 +94,7 @@ We will attempt to use a genetic algorithm to optimize a rules-based approach. T
 
 \section{Implementation: Training}
 
+
 %------------------------------------------------
 
 \section{Implementation: Early Game}
@@ -103,7 +104,7 @@ Given our use of genetic programming, performing comprehensive searches of the s
 
 However, another possible strategy for the early game is that we can create a rules based approach based on the intuition from having little constraint from placing the cards apart or together early game based on the `ideal' hands (those that award a lot of points).
 
-We will attempt to build a rules based approach which determines the good hands for the particular game, and then uses rules that leave the possibility for the most of such hands available. Given it is effective in early trials, it will be added in the final version. 
+We will attempt to build a rules based approach which determines the good hands for the particular game, and then uses rules that leave the possibility for the most of such hands available. Given it is effective in early trials, it will be added in the final version.
 %------------------------------------------------
 
 \section{Implementation: Mid game}
@@ -115,6 +116,10 @@ We will attempt to build a rules based approach which determines the good hands 
 %------------------------------------------------
 
 \section{Implementation: Endgame}
+
+In the late game (approximately the last four to five cards), the amount of possibilities in the state space greatly diminishes, which is a factor of more cards being drawn and fewer places to put the cards that are drawn. This makes it much more feasible to search the entire tree using an expectimax tree. Since the strategies used for the early and mid game are ideally going to choose quickly, we can exploit leftover time to search the state space an produce a more optimal outcome in the late game.
+
+At this point, it is unclear how much time is actually going to be available of the 30 seconds to search the state space before playing cards, and, more importantly, how feasible it is to search the state space late game. Ideally, we can create a function that checks the amount of time left and allots an amount of time to searching the state space before placing the cards.
 
 \subsection{Feasible Search}
 
