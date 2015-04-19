@@ -95,6 +95,7 @@ We will attempt to use a genetic algorithm to optimize a rules-based approach. T
 \section{Implementation: Training}
 Using our genetic approach (described below), we intend to find an optimized, generalized tree for playing poker squares. This tree would be one that is not necessarily the best on a given point systerm but will do the best overall when played with many different point systems. We will then hard code this generalized tree into the program so that the initial population will be the same as or similar to this generalized tree. This will all be done before the contest itself. Within the contest, during the frist 5 minutes we will start will a population of generalized trees and slight variants then running our genetic algorithm given the point system for the game to acheive an optimal tree for the game. 
 
+
 %------------------------------------------------
 
 \section{Implementation: Early Game}
@@ -104,7 +105,7 @@ Given our use of genetic programming, performing comprehensive searches of the s
 
 However, another possible strategy for the early game is that we can create a rules based approach based on the intuition from having little constraint from placing the cards apart or together early game based on the `ideal' hands (those that award a lot of points).
 
-We will attempt to build a rules based approach which determines the good hands for the particular game, and then uses rules that leave the possibility for the most of such hands available. Given it is effective in early trials, it will be added in the final version. 
+We will attempt to build a rules based approach which determines the good hands for the particular game, and then uses rules that leave the possibility for the most of such hands available. Given it is effective in early trials, it will be added in the final version.
 %------------------------------------------------
 
 \section{Implementation: Mid game}
@@ -118,6 +119,10 @@ The most difficult part of creating the tree will be deciding what leaf nodes to
 %------------------------------------------------
 
 \section{Implementation: Endgame}
+
+In the late game (approximately the last four to five cards), the amount of possibilities in the state space greatly diminishes, which is a factor of more cards being drawn and fewer places to put the cards that are drawn. This makes it much more feasible to search the entire tree using an expectimax tree. Since the strategies used for the early and mid game are ideally going to choose quickly, we can exploit leftover time to search the state space an produce a more optimal outcome in the late game.
+
+At this point, it is unclear how much time is actually going to be available of the 30 seconds to search the state space before playing cards, and, more importantly, how feasible it is to search the state space late game. Ideally, we can create a function that checks the amount of time left and allots an amount of time to searching the state space before placing the cards.
 
 \subsection{Feasible Search}
 
