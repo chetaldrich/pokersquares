@@ -63,7 +63,7 @@
 
 \begin{abstract}
 
-\noindent In order to create a solver for parametrized poker squares, we will attempt to find an optimized rule-based approach using a genetic algorithm to evolve promising combinations of rules. Ideally, using parameterized rules, we can develop a strong general solution that can be seeded to increase the effectiveness and speed of the algorithm's learning curve and produce high scores given minimal time for preprocessing.
+\noindent In order to create a solver for parametrized poker squares, we will attempt to use genetic programming to evolve an optimized strategy. Ideally, using parameterized input, we can develop a strong general solution that can be seeded to increase the effectiveness and speed of the algorithm's learning curve and produce high scores given minimal time for preprocessing. Then, in each game, we'll use a combination of a rules based approach early game, the genetic algorithm mid game, and a thorough search of the state space via an expectimax tree.
 
 \end{abstract}
 
@@ -110,7 +110,7 @@ We will attempt to build a rules based approach which determines the good hands 
 \section{Implementation: Mid game}
 
 \subsection{Evolving an Optimal Strategy}
-We intend to use a genetic programming based approach to create an optimal strategy for playing poker squares. We will be using a simplified functional language represented as a parse tree to decide where each card will be placed. This will involve the classic genetic programming steps of representing each chromosome as a tree, using each tree to simulate many (roughly 100) games, and then keeping the winners and performing both mutation and crossover randomly. The tree itself will take the current board and use various operation (such as addition and multiplication) as well as leaf nodes based on the state of the board (such as next card to place and random values) to deterine where the next card will be placed. The output of the tree will be a number between 1 and 25 representing the position on the board to place the card. 
+We intend to use a genetic programming based approach to create an optimal strategy for playing poker squares. We will be using a simplified functional language represented as a parse tree to decide where each card will be placed. This will involve the classic genetic programming steps of representing each chromosome as a tree, using each tree to simulate many (roughly 100) games, and then keeping the winners and performing both mutation and crossover randomly. The tree itself will take the current board and use various operation (such as addition and multiplication) as well as leaf nodes based on the state of the board (such as next card to place and random values) to deterine where the next card will be placed. The output of the tree will be a number between 1 and 25 representing the position on the board to place the card.
 
 \subsection{Selecting Leaf Nodes}
 The most difficult part of creating the tree will be deciding what leaf nodes to use and how to represent the board state. We would like to be able to use information such as where cards have already been placed, what the values of certain cards on the board are (both suit and rank), and what is the next card to be placed. This must be done in a way such that they will return only a single value that can be interpreted within the tree.
@@ -118,19 +118,21 @@ The most difficult part of creating the tree will be deciding what leaf nodes to
 %------------------------------------------------
 
 \section{Implementation: Endgame}
+\subsection{Feasible Search}
 
 In the late game (approximately the last four to five cards), the amount of possibilities in the state space greatly diminishes, which is a factor of more cards being drawn and fewer places to put the cards that are drawn. This makes it much more feasible to search the entire tree using an expectimax tree. Since the strategies used for the early and mid game are ideally going to choose quickly, we can exploit leftover time to search the state space an produce a more optimal outcome in the late game.
 
+\subsection{Time Constraints}
 At this point, it is unclear how much time is actually going to be available of the 30 seconds to search the state space before playing cards, and, more importantly, how feasible it is to search the state space late game. Ideally, we can create a function that checks the amount of time left and allots an amount of time to searching the state space before placing the cards.
 
-\subsection{Feasible Search}
+
 
 
 %-----------------------------------------------------------------------------
 %	REFERENCE LIST
 %-----------------------------------------------------------------------------
 
-\begin{thebibliography}{99} % Bibliography: place potential sources here.
+% \begin{thebibliography}{99} % Bibliography: place potential sources here.
 
 %Typical item shown below.
 %\bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
@@ -139,7 +141,7 @@ At this point, it is unclear how much time is actually going to be available of 
 %  study.
 %\newblock {\em Human Nature}, 20:317--330.
 
-\end{thebibliography}
+% \end{thebibliography}
 
 %-----------------------------------------------------------------------------
 
