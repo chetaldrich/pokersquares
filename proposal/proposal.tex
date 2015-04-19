@@ -92,8 +92,18 @@ We will attempt to use a genetic algorithm to optimize a rules-based approach. T
 
 %------------------------------------------------
 
-\section{Implementation: Early Game}
+\section{Implementation: Training}
 
+%------------------------------------------------
+
+\section{Implementation: Early Game}
+In the early game, there is little constraint that is added by the use of new cards. In particular, for the first five cards, placing the cards along the diagonal can prevent any of the first five cards that are drawn from being in scored hands with each other if they aren't deemed to be good cards to place together given the parameters.
+
+Given our use of genetic programming, performing comprehensive searches of the state space is not the goal, so it may not present an issue to just use the developed tree during the training phase to make decisions.
+
+However, another possible strategy for the early game is that we can create a rules based approach based on the intuition from having little constraint from placing the cards apart or together early game based on the `ideal' hands (those that award a lot of points).
+
+We will attempt to build a rules based approach which determines the good hands for the particular game, and then uses rules that leave the possibility for the most of such hands available. Given it is effective in early trials, it will be added in the final version. 
 %------------------------------------------------
 
 \section{Implementation: Mid game}
