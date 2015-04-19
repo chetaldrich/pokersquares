@@ -88,12 +88,12 @@ Any number of scoring systems can be used, from the American and English scoring
 
 \section{Proposal}
 
-We will attempt to use a genetic algorithm to optimize a rules-based approach. The concept is that we can abstract in-game partial hands (as part of a rules based approach), and then create a valuation function for each hand based on the parameterized input. From there, the abstractions can either be used or not used as part of the valuation function, and create many strings that denote using different game valuation abstractions randomly. By testing the fitness of each of the different strategies for valuation, the algorithm can evolve to use a more optimal strategy.
+We will attempt to use a genetic algorithm in combination with a rules based approach early game and an expectimax tree late game. The concept is that we can abstract in-game concepts (such as optimal hands and placement) into leaf nodes of the tree, and then create a valuation of states based on parameterized input. From there, we can evolve an optimal decision tree, which we'll use during the mid game in combination with the other approaches.
 
 %------------------------------------------------
 
 \section{Implementation: Training}
-Using our genetic approach (described below), we intend to find an optimized, generalized tree for playing poker squares. This tree would be one that is not necessarily the best on a given point systerm but will do the best overall when played with many different point systems. We will then hard code this generalized tree into the program so that the initial population will be the same as or similar to this generalized tree. This will all be done before the contest itself. Within the contest, during the frist 5 minutes we will start will a population of generalized trees and slight variants then running our genetic algorithm given the point system for the game to acheive an optimal tree for the game. 
+Using our genetic approach (described below), we intend to find an optimized, generalized tree for playing poker squares. This tree would be one that is not necessarily the best on a given point systerm but will do the best overall when played with many different point systems. We will then hard code this generalized tree into the program so that the initial population will be the same as or similar to this generalized tree. This will all be done before the contest itself. Within the contest, during the frist 5 minutes we will start will a population of generalized trees and slight variants then running our genetic algorithm given the point system for the game to acheive an optimal tree for the game.
 
 
 %------------------------------------------------
