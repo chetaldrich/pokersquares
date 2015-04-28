@@ -28,13 +28,21 @@ public class GeneticPlayer implements PokerSquaresPlayer {
         numPlays = 0;
     }
 
+    private void addToGrid(Card card, int[] playPosition) {
+        grid[playPosition[0]][playPosition[1]] = card;
+    }
+
+    public Card[][] getGrid() {
+        return grid;
+    }
+
+
     @Override
     public int[] getPlay(Card card, long millisRemaining) {
         // TODO: actually start picking moves;
         // only picks a single move.
-
-        
         int[] playPosition = {1, 1};
+        addToGrid(card, playPosition);
         return playPosition;
     }
 
