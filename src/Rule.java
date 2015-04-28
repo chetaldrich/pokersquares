@@ -10,12 +10,12 @@ public class Rule {
                 grid[row][col] = null;
     }
 
-    private boolean checkRow(int rowNum) {
-    
+    private int checkRow(int rowNum) {
+        return 1;
     }
 
-    private boolean checkColumn(int colNum) {
-    
+    private int checkColumn(int colNum) {
+        return 1;
     }
 
 }
