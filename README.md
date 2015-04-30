@@ -26,7 +26,7 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 
 #### public class Decision()
 
-- [ ] Create a Decision class
+- [x] Create a Decision class
 - [ ] Implement replaceNode()
 - [ ] Implement mutation
 
