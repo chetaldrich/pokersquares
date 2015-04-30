@@ -1,8 +1,24 @@
 import java.util.Random;
+import java.lang.String;
 
 public class Decision {
 
+    /**
+     * Boolean for row or column property.
+     * True = row
+     * False = column
+     */
+    boolean rc;
+
+    /**
+     * Stores which function to use for decision.
+     */
+    String decisionType;
+    Random randomGenerator;
+
+
     public Decision() {
+        decisionType = decideLabel();
 
     }
 
@@ -10,7 +26,34 @@ public class Decision {
      * @return A String that determines the type of this decision.
      */
     private String decideLabel() {
-        String label = "label to be determined randomly";
+        randomGenerator = new Random();
+        boolean rc = randomGenerator.nextBoolean();
+
+        int method = randomGenerator.nextInt(8) + 1;
+
+        String label;
+
+            switch (method) {
+                case 1: label = "leastCards";
+                        break;
+                case 2: label = "mostCards";
+                        break;
+                case 3: label = "mostSuit";
+                        break;
+                case 4: label = "mostRank";
+                        break;
+                case 5: label = "extendStraight";
+                        break;
+                case 6: label = "placeLeft";
+                        break;
+                case 7: label = "placeTop";
+                        break;
+                case 8: label = "placeRandom";
+                        break;
+                default: throw new IllegalStateException(
+                                   "Invalid integer: not in 0-8 (Decision)");
+            }
+
         return label;
     }
 
@@ -123,11 +166,6 @@ public class Decision {
         int[] position = {1,1};
         return position;
     }
-
-
-
-
-
 
 
 }

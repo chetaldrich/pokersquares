@@ -5,7 +5,7 @@ public class Rule {
     private final Rule condition;
     private final Rule left;
     private final Rule right;
-    Random randy;
+    Random randomGenerator;
     boolean row;
     int whichRC;
     int pointThresh;
@@ -19,13 +19,13 @@ public class Rule {
         left = new Rule();
         right = new Rule();
 
-        randy = new Random();
+        randomGenerator = new Random();
         // determine if checking row or column
-        boolean randBool = randy.nextBoolean();
+        boolean randBool = randomGenerator.nextBoolean();
         row = randBool;
 
         // which row or column to check
-        int randInt = randy.nextInt(5);
+        int randInt = randomGenerator.nextInt(5);
         whichRC = randInt;
         // at what point threshold (for a hand) should the thingy go left/right
         // TODO: NEED TO FIGURE OUT HOW ON EARTH WE'RE GOING TO DO THIS
