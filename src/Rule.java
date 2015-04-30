@@ -2,6 +2,10 @@ import java.util.Random;
 
 public class Rule {
 
+    private final Rule condition;
+    private final Rule left;
+    private final Rule right;
+
     Card[][] grid;
     boolean row;
     boolean column;
@@ -14,7 +18,15 @@ public class Rule {
     int whichRC;
     int totalNeeded;
 
+
     public Rule() {
+
+        // initialize the rule nodes
+        condition = new Rule();
+        left = new Rule();
+        right = new Rule();
+
+
         randy = new Random();
         // determine if checking row or column
         boolean randBool = randy.nextBoolean();
@@ -47,6 +59,15 @@ public class Rule {
         randInt = randy.nextInt(5);
         totalNeeded = randInt;
     }
+
+    /**
+     * @return A String that represents the function or value of this node.
+     */
+    String getLabel() {
+        String label = "Label based on row/col, rank/straight/suit";
+        return label;
+    }
+
 
     private int checkRowRank(int rowNum) {
         int rankCount = 0;
@@ -104,6 +125,10 @@ public class Rule {
         return 1;
     }
 
+    /**
+     * Evaluates the node at this level and returns one of the child nodes.
+     * @return A boolean, indicating which direction to move in the tree.
+     */
     public boolean doCheck(Card[][] grid) {
         this.grid = grid;
         int result = 0;
@@ -131,5 +156,18 @@ public class Rule {
         }
     }
 
-}
+    /**
+     * Retrieves a direct sub-rule from this rule.
+     * @param index The index of a child rule. 0 is left, 1 is right.
+     * @return The node at the specified position.
+     */
+    Rule getChild(boolean decision) {
+        if (decision) {
+            return right;
+        } else {
+            return left;
+        }
+    }
 
+
+}

@@ -3,7 +3,7 @@ import java.util.Random;
 public interface Node {
 
     /**
-     * @return A short String that represents the function or value represented by this node.
+     * @return A String that represents the function or value of this node.
      */
     String getLabel();
 
@@ -13,6 +13,13 @@ public interface Node {
      * @return The arity of this function, or zero if this node is a leaf node.
      */
     int getArity();
+
+
+    /**
+     * @return The total number of nodes in this tree (recursively counts the
+     * nodes for each sub-node of this node).
+     */
+    int countNodes();
 
 
     /**
