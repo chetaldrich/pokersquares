@@ -28,9 +28,11 @@ public class GeneticPlayer implements PokerSquaresPlayer {
         numPlays = 0;
     }
 
+
     private void addToGrid(Card card, int[] playPosition) {
         grid[playPosition[0]][playPosition[1]] = card;
     }
+
 
     public Card[][] getGrid() {
         return grid;
@@ -53,10 +55,8 @@ public class GeneticPlayer implements PokerSquaresPlayer {
     }
 
 
-
     public static void main(String[] args) {
         PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmeritishPointSystem();
-        System.out.println("hello");
         System.out.println(system);
 
         // play a single game
