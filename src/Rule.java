@@ -5,19 +5,28 @@ public class Rule {
     private final Rule condition;
     private final Rule left;
     private final Rule right;
+    private final int HAND_SIZE;
+    private final int FLUSH_SCORE;
+    private final int STRAIGHT_SCORE;
+    private final PokerSquaresPointSystem pointSystem;
     Random randomGenerator;
     boolean row;
-    int whichRC;
+    int rc;
     int pointThresh;
 
 
-    public Rule() {
+    public Rule(PokerSquaresPointSystem ps) {
 
         // initialize the rule nodes
         // TODO: Restructure so decisions can be at end of the tree
-        condition = new Rule();
-        left = new Rule();
-        right = new Rule();
+        condition = new Rule(ps);
+        left = new Rule(ps);
+        right = new Rule(ps);
+
+        pointSystem = ps;
+        HAND_SIZE = 5;
+        FLUSH_SCORE = pointSystem.getHandScore(PokerHand.FLUSH);
+        STRAIGHT_SCORE = pointSystem.getHandScore(PokerHand.STRAIGHT);
 
         randomGenerator = new Random();
         // determine if checking row or column
@@ -26,11 +35,8 @@ public class Rule {
 
         // which row or column to check
         int randInt = randomGenerator.nextInt(5);
-        whichRC = randInt;
-        // at what point threshold (for a hand) should the thingy go left/right
-        // TODO: NEED TO FIGURE OUT HOW ON EARTH WE'RE GOING TO DO THIS
-        // PROBABLY SOMETHING WITH MEDIANS AND WHATNOT
-        // IDK IT'S CRAZY
+        rc = randInt;
+        // at what point threshold (for a hand) should the rule go left/right
         pointThresh = 0;
     }
 
@@ -51,10 +57,25 @@ public class Rule {
      */
     private boolean checkRow(Card[][] grid, Card curCard) {
         // put card into the row that we care about
-        Card[] potentialHand = grid[whichRC];
-
-        // get value of hand
-        return true;
+        Card[] potentialHand = grid[rc];
+        int handLength = 0;
+        for (int i=0; i<potentialHand.length; i++) {
+            if (potentialHand[i] != null) handLength ++;
+        }
+        while (handLength >= 5) {
+            int nextRC = (rc+1)%HAND_SIZE;
+            potentialHand = grid[rc];
+            for (int i=0; i<potentialHand.length; i++) {
+                if (potentialHand[i] != null) handLength ++;
+            }
+        }
+        potentialHand[handLength] = curCard;
+        int handScore = pointSystem.getHandScore(potentialHand);
+        int suitScore = suitCheck(potentialHand);
+        int seqScore = seqCheck(potentialHand);
+        if (suitScore > handScore) handScore = suitScore;
+        else if (seqScore > handScore) handScore = seqScore;
+        return (handScore > pointThresh);
     }
 
     /**
@@ -65,10 +86,41 @@ public class Rule {
      */
     private boolean checkColumn(Card[][] grid, Card curCard) {
         // put card into the column that we care about
-        Card[] potentialHand;
+        Card[] potentialHand = new Card[5];
+        int handLength = 0;
+        for (int i=0; i<potentialHand.length; i++) {
+            potentialHand[i] = grid[rc][i];
+            if (potentialHand[i] != null) handLength ++;
+        }
+        while (handLength >= 5) {
+            for (int i=0; i<potentialHand.length; i++) {
+                potentialHand[i] = grid[rc][i];
+                if (potentialHand[i] != null) handLength ++;
+            }
+        }
+        potentialHand[handLength] = curCard;
+        int handScore = pointSystem.getHandScore(potentialHand);
+        int suitScore = suitCheck(potentialHand);
+        int seqScore = seqCheck(potentialHand);
+        if (suitScore > handScore) handScore = suitScore;
+        else if (seqScore > handScore) handScore = seqScore;
+        return (handScore > pointThresh);
+    }
 
-        // get value of hand
-        return true;
+    /**
+     * 
+     * @return An int
+     */
+    private int suitCheck(Card[] hand) {
+        return 1;
+    }
+
+    /**
+     * 
+     * @return An int
+     */
+    private int seqCheck(Card[] hand) {
+        return 1;
     }
 
     /**
