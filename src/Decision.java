@@ -1,5 +1,10 @@
 import java.util.Random;
 import java.lang.String;
+import java.util.Collections;
+import java.util.function.Predicate;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class Decision {
 
@@ -20,6 +25,7 @@ public class Decision {
     public Decision() {
         decisionType = decideLabel();
 
+
     }
 
     /**
@@ -27,10 +33,9 @@ public class Decision {
      */
     private String decideLabel() {
         randomGenerator = new Random();
-        boolean rc = randomGenerator.nextBoolean();
+        rc = randomGenerator.nextBoolean();
 
         int method = randomGenerator.nextInt(8) + 1;
-
         String label;
 
             switch (method) {
@@ -61,9 +66,54 @@ public class Decision {
      * @return A String that represents the function or value of this node.
      */
     public String getLabel() {
-        //TODO: implement
-        String label = "Label based on type of decision";
-        return label;
+        return rc ? decisionType + ":r" : decisionType + ":c";
+    }
+
+
+
+    /**
+     * Counts the cards in the row/column that fit a certain criterion
+     * @return A list of counts sorted by the criterion in rows/columns.
+     */
+     private int[][] countCards(Card[][] grid, Predicate<Card> filter) {
+        int[][] counts = new int[5][2];
+        // make the second entry in each count the row/col number
+        for (int i = 1; i < 5; i++) {
+            counts[i][1] = i;
+        }
+
+        // count the number of entries in each row/col
+        if (rc) {
+            // row
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 5; col++) {
+                    if (filter.test(grid[row][col])) {
+                        counts[row][0]++;
+                    }
+                }
+            }
+        } else {
+            // column
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 5; col++) {
+                    if (filter.test(grid[col][row])) {
+                        counts[row][0]++;
+                    }
+                }
+            }
+        }
+
+        // compares 2 dimensional int arrays
+        Arrays.sort(counts, new Comparator<int[]>() {
+        @Override
+        public int compare(final int[] item1, final int[] item2) {
+            return item2[0] - item1[0];
+        }
+        });
+
+        // TODO: randomize if any two values are the same.
+
+        return counts;
     }
 
     /**
@@ -71,7 +121,7 @@ public class Decision {
      * least amount of cards, and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] leastCards() {
+    private int[] leastCards(Card[][] grid) {
         // TODO: implement
         int[] position = {1,1};
         return position;
@@ -82,10 +132,33 @@ public class Decision {
      * most cards, and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] mostCards() {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+    private int[] mostCards(Card[][] grid) {
+        Predicate<Card> isCard = (Card card) -> card != null;
+        int[][] rcList = countCards(grid, isCard);
+
+        // loop through each row/col as necessary to find a place
+        // to play the card.
+        for (int rcPosition = 0; rcPosition < 5; rcPosition++) {
+            // check row or column.
+            if (rc) {
+                // row
+                for (int i = 0; i < 5; i++) {
+                    if (grid[rcPosition][i] == null) {
+                        int[] position = {rcPosition, i};
+                        return position;
+                    }
+                }
+            } else {
+                // column
+                for (int i = 0; i < 5; i++) {
+                    if (grid[i][rcPosition] == null) {
+                        int[] position = {i, rcPosition};
+                        return position;
+                    }
+                }
+            }
+        }
+        return placeRandom();
     }
 
     /**
@@ -162,7 +235,7 @@ public class Decision {
      * on the grid to place the card.
      * @return A boolean, indicating which direction to move in the tree.
      */
-    public int[] evaluate() {
+    public int[] evaluate(Card[][] grid) {
         int[] position = {1,1};
         return position;
     }
