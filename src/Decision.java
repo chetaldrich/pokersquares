@@ -107,11 +107,14 @@ public class Decision {
         Arrays.sort(counts, new Comparator<int[]>() {
         @Override
         public int compare(final int[] item1, final int[] item2) {
+            // randomize if the values are the same
+            if (item2[0] - item1[0] == 0) {
+                return randomGenerator.nextBoolean() ? 1 : -1;
+            }
+            // otherwise, return the normal comparator
             return item2[0] - item1[0];
         }
         });
-
-        // TODO: randomize if any two values are the same.
 
         return counts;
     }
