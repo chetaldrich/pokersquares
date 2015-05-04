@@ -34,7 +34,7 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 ##### Types of Decisions to Implement
 - [x] row/col with least cards
 - [x] row/col with most cards
-- [ ] row/col with most of a suit
+- [x] row/col with most of a suit
 - [ ] row/col with most of a rank
 - [ ] row/col extends straight
 - [ ] random()

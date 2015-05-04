@@ -156,10 +156,10 @@ public class Decision {
      * least amount of cards, and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] leastCards(Card[][] grid) {
+    private int[] leastCards(Card[][] grid, Card drawnCard) {
         Predicate<Card> isNotCard = (Card card) -> card == null;
-        int[][] rcList = countCards(grid, isNotCard);
-        return placeCard(grid, rcList);
+        int[][] preferenceList = countCards(grid, isNotCard);
+        return placeCard(grid, preferenceList);
     }
 
     /**
@@ -167,10 +167,10 @@ public class Decision {
      * most cards, and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] mostCards(Card[][] grid) {
+    private int[] mostCards(Card[][] grid, Card drawnCard) {
         Predicate<Card> isCard = (Card card) -> card != null;
-        int[][] rcList = countCards(grid, isCard);
-        return placeCard(grid, rcList);
+        int[][] preferenceList = countCards(grid, isCard);
+        return placeCard(grid, preferenceList);
     }
 
     /**
@@ -179,10 +179,15 @@ public class Decision {
      * and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] mostSuit() {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+    private int[] mostSuit(Card[][] grid, Card drawnCard) {
+        int currentSuit = drawnCard.getSuit();
+        Predicate<Card> isSameSuit =
+            (Card card) ->
+                card == null ? false : card.getSuit() == currentSuit;
+        int[][] preferenceList = countCards(grid, isSameSuit);
+        // NOTE: might be worth it to play in a row/col that is empty
+        // over a random row to build flushes.
+        return placeCard(grid, preferenceList);
     }
 
     /**
@@ -247,7 +252,7 @@ public class Decision {
      * on the grid to place the card.
      * @return A boolean, indicating which direction to move in the tree.
      */
-    public int[] evaluate(Card[][] grid) {
+    public int[] evaluate(Card[][] grid, Card drawnCard) {
         int[] position = {1,1};
         return position;
     }
