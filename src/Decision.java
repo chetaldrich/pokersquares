@@ -122,9 +122,33 @@ public class Decision {
      * @return A position in the grid
      */
     private int[] leastCards(Card[][] grid) {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+        Predicate<Card> isNotCard = (Card card) -> card == null;
+        int[][] rcList = countCards(grid, isNotCard);
+
+        // loop through each row/col as necessary to find a place
+        // to play the card.
+        for (int listPosition = 0; listPosition < 5; listPosition++) {
+            // check row or column.
+            int bestPosition = rcList[listPosition][1];
+            if (rc) {
+                // row
+                for (int i = 0; i < 5; i++) {
+                    if (grid[bestPosition][i] == null) {
+                        int[] position = {bestPosition, i};
+                        return position;
+                    }
+                }
+            } else {
+                // column
+                for (int i = 0; i < 5; i++) {
+                    if (grid[i][bestPosition] == null) {
+                        int[] position = {i, bestPosition};
+                        return position;
+                    }
+                }
+            }
+        }
+        return placeRandom();
     }
 
     /**
@@ -138,21 +162,22 @@ public class Decision {
 
         // loop through each row/col as necessary to find a place
         // to play the card.
-        for (int rcPosition = 0; rcPosition < 5; rcPosition++) {
+        for (int listPosition = 0; listPosition < 5; listPosition++) {
             // check row or column.
+            int bestPosition = rcList[listPosition][1];
             if (rc) {
                 // row
                 for (int i = 0; i < 5; i++) {
-                    if (grid[rcPosition][i] == null) {
-                        int[] position = {rcPosition, i};
+                    if (grid[bestPosition][i] == null) {
+                        int[] position = {bestPosition, i};
                         return position;
                     }
                 }
             } else {
                 // column
                 for (int i = 0; i < 5; i++) {
-                    if (grid[i][rcPosition] == null) {
-                        int[] position = {i, rcPosition};
+                    if (grid[i][bestPosition] == null) {
+                        int[] position = {i, bestPosition};
                         return position;
                     }
                 }
