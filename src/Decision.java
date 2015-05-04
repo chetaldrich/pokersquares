@@ -196,10 +196,15 @@ public class Decision {
      * and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] mostRank() {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+    private int[] mostRank(Card[][] grid, Card drawnCard) {
+        int currentRank = drawnCard.getRank();
+        Predicate<Card> isSameRank =
+            (Card card) ->
+                card == null ? false : card.getRank() == currentRank;
+        int[][] preferenceList = countCards(grid, isSameRank);
+        // NOTE: might be worth it to play in a row/col that is empty
+        // over a random row to build 3 and 4 of a kind.
+        return placeCard(grid, preferenceList);
     }
 
     /**

@@ -35,7 +35,7 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 - [x] row/col with least cards
 - [x] row/col with most cards
 - [x] row/col with most of a suit
-- [ ] row/col with most of a rank
+- [x] row/col with most of a rank
 - [ ] row/col extends straight
 - [ ] random()
 - [ ] left() // as left as possible
