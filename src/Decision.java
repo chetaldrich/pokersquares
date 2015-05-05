@@ -1,5 +1,10 @@
 import java.util.Random;
 import java.lang.String;
+import java.util.Collections;
+import java.util.function.Predicate;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class Decision {
 
@@ -20,6 +25,7 @@ public class Decision {
     public Decision() {
         decisionType = decideLabel();
 
+
     }
 
     /**
@@ -27,10 +33,9 @@ public class Decision {
      */
     private String decideLabel() {
         randomGenerator = new Random();
-        boolean rc = randomGenerator.nextBoolean();
+        rc = randomGenerator.nextBoolean();
 
         int method = randomGenerator.nextInt(8) + 1;
-
         String label;
 
             switch (method) {
@@ -61,9 +66,89 @@ public class Decision {
      * @return A String that represents the function or value of this node.
      */
     public String getLabel() {
-        //TODO: implement
-        String label = "Label based on type of decision";
-        return label;
+        return rc ? decisionType + ":r" : decisionType + ":c";
+    }
+
+
+
+    /**
+     * Counts the cards in the row/column that fit a certain criterion
+     * @return A list of counts sorted by the criterion in rows/columns.
+     */
+     private int[][] countCards(Card[][] grid, Predicate<Card> filter) {
+        int[][] counts = new int[5][2];
+        // make the second entry in each count the row/col number
+        for (int i = 1; i < 5; i++) {
+            counts[i][1] = i;
+        }
+
+        // count the number of entries in each row/col
+        if (rc) {
+            // row
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 5; col++) {
+                    if (filter.test(grid[row][col])) {
+                        counts[row][0]++;
+                    }
+                }
+            }
+        } else {
+            // column
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 5; col++) {
+                    if (filter.test(grid[col][row])) {
+                        counts[row][0]++;
+                    }
+                }
+            }
+        }
+
+        // compares 2 dimensional int arrays
+        Arrays.sort(counts, new Comparator<int[]>() {
+        @Override
+        public int compare(final int[] item1, final int[] item2) {
+            // randomize if the values are the same
+            if (item2[0] - item1[0] == 0) {
+                return randomGenerator.nextBoolean() ? 1 : -1;
+            }
+            // otherwise, return the normal comparator
+            return item2[0] - item1[0];
+        }
+        });
+
+        return counts;
+    }
+
+    /**
+     * Determines a position to place a card given
+     * a sorted preference list of rows/cols.
+     * @return A position in the grid
+     */
+    private int[] placeCard(Card[][] grid, int[][] preferenceList) {
+        // loop through each row/col as necessary to find a place
+        // to play the card.
+        for (int listPosition = 0; listPosition < 5; listPosition++) {
+            // check row or column.
+            int bestPosition = preferenceList[listPosition][1];
+            if (rc) {
+                // row
+                for (int i = 0; i < 5; i++) {
+                    if (grid[bestPosition][i] == null) {
+                        int[] position = {bestPosition, i};
+                        return position;
+                    }
+                }
+            } else {
+                // column
+                for (int i = 0; i < 5; i++) {
+                    if (grid[i][bestPosition] == null) {
+                        int[] position = {i, bestPosition};
+                        return position;
+                    }
+                }
+            }
+        }
+        return placeRandom();
     }
 
     /**
@@ -71,10 +156,10 @@ public class Decision {
      * least amount of cards, and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] leastCards() {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+    private int[] leastCards(Card[][] grid, Card drawnCard) {
+        Predicate<Card> isNotCard = (Card card) -> card == null;
+        int[][] preferenceList = countCards(grid, isNotCard);
+        return placeCard(grid, preferenceList);
     }
 
     /**
@@ -82,10 +167,10 @@ public class Decision {
      * most cards, and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] mostCards() {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+    private int[] mostCards(Card[][] grid, Card drawnCard) {
+        Predicate<Card> isCard = (Card card) -> card != null;
+        int[][] preferenceList = countCards(grid, isCard);
+        return placeCard(grid, preferenceList);
     }
 
     /**
@@ -94,10 +179,15 @@ public class Decision {
      * and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] mostSuit() {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+    private int[] mostSuit(Card[][] grid, Card drawnCard) {
+        int currentSuit = drawnCard.getSuit();
+        Predicate<Card> isSameSuit =
+            (Card card) ->
+                card == null ? false : card.getSuit() == currentSuit;
+        int[][] preferenceList = countCards(grid, isSameSuit);
+        // NOTE: might be worth it to play in a row/col that is empty
+        // over a random row to build flushes.
+        return placeCard(grid, preferenceList);
     }
 
     /**
@@ -106,10 +196,15 @@ public class Decision {
      * and gives a free position in that row/column.
      * @return A position in the grid
      */
-    private int[] mostRank() {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+    private int[] mostRank(Card[][] grid, Card drawnCard) {
+        int currentRank = drawnCard.getRank();
+        Predicate<Card> isSameRank =
+            (Card card) ->
+                card == null ? false : card.getRank() == currentRank;
+        int[][] preferenceList = countCards(grid, isSameRank);
+        // NOTE: might be worth it to play in a row/col that is empty
+        // over a random row to build 3 and 4 of a kind.
+        return placeCard(grid, preferenceList);
     }
 
     /**
@@ -162,7 +257,7 @@ public class Decision {
      * on the grid to place the card.
      * @return A boolean, indicating which direction to move in the tree.
      */
-    public int[] evaluate() {
+    public int[] evaluate(Card[][] grid, Card drawnCard) {
         int[] position = {1,1};
         return position;
     }

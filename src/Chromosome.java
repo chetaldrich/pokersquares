@@ -8,8 +8,8 @@ public class Chromosome {
         this.length = length;
         ruleList = new ArrayList<Rule>(length);
         for (int i=0; i<length; i++) {
-            Rule tempRule = new Rule();
-            ruleList.add(tempRule);
+            // Rule tempRule = new Rule();
+            // ruleList.add(tempRule);
         }
     }
 }
