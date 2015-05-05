@@ -9,17 +9,17 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 
 ### TODO
 #### public class Rule()
-- [ ] Check hand against the card that was just flipped.
+- [x] Check hand against the card that was just flipped.
 - [ ] Rule only occurs at non-terminal points in the tree.
-- [ ] Rule puts card into row/column and checks what hand it returns in point system
+- [x] Rule puts card into row/column and checks what hand it returns in point system
 - [ ] Implement replaceNode()
 - [ ] Implement mutation
 
 ##### Determining score?
 
-- [ ] Implement parametrized suit check
+- [x] Implement parametrized suit check
 - [ ] Implement parametrized sequence check
-- [ ] Implement standard hand check for scoring
+- [x] Implement standard hand check for scoring
 - [ ] Determine the cutoff for deciding on right or left subtree
 - [ ] Implement a randomized reasonable cutoff mechanism
 
