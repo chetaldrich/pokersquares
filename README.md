@@ -18,7 +18,7 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 ##### Determining score?
 
 - [x] Implement parametrized suit check
-- [ ] Implement parametrized sequence check
+- [x] Implement parametrized sequence check
 - [x] Implement standard hand check for scoring
 - [ ] Determine the cutoff for deciding on right or left subtree
 - [ ] Implement a randomized reasonable cutoff mechanism

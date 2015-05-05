@@ -1,10 +1,14 @@
 import java.util.Random;
+import java.util.Arrays;
 
 public class Rule {
 
     private final Rule condition;
-    private final Rule left;
-    private final Rule right;
+    private final Rule leftRule;
+    private final Rule rightRule;
+    private final Decision leftDecision;
+    private final Decision rightDecision;
+    private final boolean makeDecision;
     private final int HAND_SIZE;
     private final int FLUSH_SCORE;
     private final int STRAIGHT_SCORE;
@@ -20,8 +24,12 @@ public class Rule {
         // initialize the rule nodes
         // TODO: Restructure so decisions can be at end of the tree
         condition = new Rule(ps);
-        left = new Rule(ps);
-        right = new Rule(ps);
+        leftRule = new Rule(ps);
+        rightRule = new Rule(ps);
+
+        leftDecision = new Decision();
+        rightDecision = new Decision();
+
 
         pointSystem = ps;
         HAND_SIZE = 5;
@@ -29,8 +37,12 @@ public class Rule {
         STRAIGHT_SCORE = pointSystem.getHandScore(PokerHand.STRAIGHT);
 
         randomGenerator = new Random();
-        // determine if checking row or column
+        // decide if this will go to more rules or to decisions
         boolean randBool = randomGenerator.nextBoolean();
+        makeDecision = randBool;
+
+        // determine if checking row or column
+        randBool = randomGenerator.nextBoolean();
         row = randBool;
 
         // which row or column to check
@@ -112,7 +124,21 @@ public class Rule {
      * @return An int
      */
     private int suitCheck(Card[] hand) {
-        return 1;
+        int[] suitCount = new int[HAND_SIZE];
+        for (int i=0; i<HAND_SIZE; i++) {
+            suitCount[i] = 0;
+        }
+        int maxSuit = 0;
+        for (int i=0; i<hand.length; i++) {
+            int suit = hand[i].getSuit();
+            suitCount[suit]++;
+            if (suitCount[suit] > maxSuit) maxSuit = suitCount[suit];
+        }
+        if (maxSuit == 0) {
+            return -101;
+        } else {
+            return (FLUSH_SCORE/(HAND_SIZE-maxSuit));
+        }
     }
 
     /**
@@ -120,7 +146,32 @@ public class Rule {
      * @return An int
      */
     private int seqCheck(Card[] hand) {
-        return 1;
+        int[] ranks = new int[HAND_SIZE];
+        for (int i=0; i<HAND_SIZE; i++) {
+            if (hand[i] == null) {
+                ranks[i] = 0;
+            } else {
+                ranks[i] = hand[i].getRank();                
+            }
+        }
+        Arrays.sort(ranks);
+        int first = 0;
+        int seqCount = 0;
+        for (int i=0; i<HAND_SIZE; i++) {
+            if (ranks[i] != 0) {
+                if (first == 0) {
+                    first = ranks[i];
+                }
+                if (ranks[i]-first < 5) {
+                    seqCount++;
+                }
+            }
+        }
+        if (seqCount == 0) {
+            return -101;
+        } else {
+            return (STRAIGHT_SCORE/(HAND_SIZE-seqCount));
+        }
     }
 
     /**
@@ -142,7 +193,12 @@ public class Rule {
      * @return The node at the specified position.
      */
     Rule getChild(boolean decision) {
-        return decision ? right : left;
+        // if (makeDecision) {
+        //     return decision ? rightDecision : leftDecision;
+        // } else {
+        //     return decision ? rightRule : leftRule;
+        // }
+        return decision ? rightRule : leftRule;
     }
 
 
