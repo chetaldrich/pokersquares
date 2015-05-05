@@ -258,8 +258,9 @@ public class Decision {
      * @return A boolean, indicating which direction to move in the tree.
      */
     public int[] evaluate(Card[][] grid, Card drawnCard) {
-        int[] position = {1,1};
-        return position;
+        return mostCards(grid, drawnCard);
+        // int[] position = {1,1};
+        // return position;
     }
 
 
