@@ -35,6 +35,9 @@ public class Rule {
         HAND_SIZE = 5;
         FLUSH_SCORE = pointSystem.getHandScore(PokerHand.FLUSH);
         STRAIGHT_SCORE = pointSystem.getHandScore(PokerHand.STRAIGHT);
+        int[] scores = pointSystem.getScoreTable();
+        Arrays.sort(scores);
+        pointThresh = scores[scores.length/2];
 
         randomGenerator = new Random();
         // decide if this will go to more rules or to decisions
