@@ -24,7 +24,8 @@ public class ChromosomeFactory {
      * fitness of each tree.
      */
     public int[] assessFitness() {
-
+        int[] fitnesses = {1, 2};
+        return fitnesses;
     }
 
 
