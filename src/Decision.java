@@ -3,6 +3,7 @@ import java.lang.String;
 import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -124,7 +125,8 @@ public class Decision {
      * a sorted preference list of rows/cols.
      * @return A position in the grid
      */
-    private int[] placeCard(Card[][] grid, int[][] preferenceList) {
+    private int[] placeCard(Card[][] grid,
+                            int[][] preferenceList, Card drawnCard) {
         // loop through each row/col as necessary to find a place
         // to play the card.
         for (int listPosition = 0; listPosition < 5; listPosition++) {
@@ -148,7 +150,7 @@ public class Decision {
                 }
             }
         }
-        return placeRandom();
+        return placeRandom(grid, drawnCard);
     }
 
     /**
@@ -159,7 +161,7 @@ public class Decision {
     private int[] leastCards(Card[][] grid, Card drawnCard) {
         Predicate<Card> isNotCard = (Card card) -> card == null;
         int[][] preferenceList = countCards(grid, isNotCard);
-        return placeCard(grid, preferenceList);
+        return placeCard(grid, preferenceList, drawnCard);
     }
 
     /**
@@ -170,7 +172,7 @@ public class Decision {
     private int[] mostCards(Card[][] grid, Card drawnCard) {
         Predicate<Card> isCard = (Card card) -> card != null;
         int[][] preferenceList = countCards(grid, isCard);
-        return placeCard(grid, preferenceList);
+        return placeCard(grid, preferenceList, drawnCard);
     }
 
     /**
@@ -187,7 +189,7 @@ public class Decision {
         int[][] preferenceList = countCards(grid, isSameSuit);
         // NOTE: might be worth it to play in a row/col that is empty
         // over a random row to build flushes.
-        return placeCard(grid, preferenceList);
+        return placeCard(grid, preferenceList, drawnCard);
     }
 
     /**
@@ -204,7 +206,7 @@ public class Decision {
         int[][] preferenceList = countCards(grid, isSameRank);
         // NOTE: might be worth it to play in a row/col that is empty
         // over a random row to build 3 and 4 of a kind.
-        return placeCard(grid, preferenceList);
+        return placeCard(grid, preferenceList, drawnCard);
     }
 
     /**
@@ -245,9 +247,19 @@ public class Decision {
      * Determines a random free position to place the card.
      * @return A position in the grid
      */
-    private int[] placeRandom() {
-        // TODO: implement
-        int[] position = {1,1};
+    private int[] placeRandom(Card[][] grid, Card drawnCard) {
+        List<int[]> freeSpaces = new ArrayList<int[]>();
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+                if (grid[row][col] == null) {
+                    int[] newPosition = {row, col};
+                    freeSpaces.add(newPosition);
+                }
+            }
+        }
+
+        int decision = randomGenerator.nextInt(freeSpaces.size());
+        int[] position = freeSpaces.get(decision);
         return position;
     }
 
@@ -258,10 +270,28 @@ public class Decision {
      * @return A boolean, indicating which direction to move in the tree.
      */
     public int[] evaluate(Card[][] grid, Card drawnCard) {
-        return mostCards(grid, drawnCard);
-        // int[] position = {1,1};
-        // return position;
+        switch (decisionType) {
+            case "leastCards":
+                return leastCards(grid, drawnCard);
+            case "mostCards":
+                return mostCards(grid, drawnCard);
+            case "mostSuit":
+                return mostSuit(grid, drawnCard);
+            case "mostRank":
+                return mostRank(grid, drawnCard);
+            // case "extendStraight":
+            //     // needs to be implemented
+            //     return extendStraight(grid, drawnCard);
+            // case "placeLeft":
+            //     // needs to be implemented
+            //     return placeLeft(grid, drawnCard);
+            // case "placeTop":
+            //     // needs to be implemented
+            //     return placeTop(grid, drawnCard);
+            case "placeRandom":
+                return placeRandom(grid, drawnCard);
+            default:
+                return placeRandom(grid, drawnCard);
+        }
     }
-
-
 }
