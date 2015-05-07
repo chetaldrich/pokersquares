@@ -145,27 +145,30 @@ public class Rule {
      * @return A boolean, indicating which direction to move in the tree.
      */
     private boolean checkRow(Card[][] grid, Card curCard) {
-        // put card into the row that we care about
+        // choose which row we'll place the card into
         Predicate<Card> isCard = (Card card) -> card != null;
         int[][] preferenceList = countCards(grid, isCard);
-        int rowChoice = preferenceList[rc][1];
-        int temprc = (rc+1)%HAND_SIZE;
-        while (preferenceList[temprc][0] == HAND_SIZE) {
-            rowChoice = preferenceList[temprc][1];
-            temprc = (temprc+1)%HAND_SIZE;
-        }
-        Card[] potentialHand = grid[rowChoice];
-        int handLength = 0;
-        for (int i=0; i<potentialHand.length; i++) {
-            if (potentialHand[i] != null) handLength ++;
-        }
-        while (handLength >= 5) {
-            int nextRC = (rc+1)%HAND_SIZE;
-            potentialHand = grid[rc];
-            for (int i=0; i<potentialHand.length; i++) {
-                if (potentialHand[i] != null) handLength++;
+        for (int i=0; i<preferenceList.length; i++) {
+            for (int j=0; j<preferenceList[i].length; j++) {
+                System.out.print(preferenceList[i][j]);
             }
+            System.out.println();
         }
+
+        // make sure there aren't too many cards in a hand
+        int temprc = rc;
+        int rowChoice = preferenceList[temprc][1];
+        while (preferenceList[temprc][0] >= HAND_SIZE) {
+            temprc = (temprc+1)%HAND_SIZE;
+            rowChoice = preferenceList[temprc][1];
+            if (temprc != rc) break;
+        }
+
+        Card[] potentialHand = grid[rowChoice].clone();
+        int handLength = preferenceList[temprc][0];
+        /////////////////PRINT///////////////////////////
+        System.out.println("row: "+ rowChoice+ " length: "+ handLength);
+        /////////////////PRINT///////////////////////////
         potentialHand[handLength] = curCard;
         int handScore = pointSystem.getHandScore(potentialHand);
         int suitScore = suitCheck(potentialHand);
@@ -182,27 +185,33 @@ public class Rule {
      * @return A boolean, indicating which direction to move in the tree.
      */
     private boolean checkColumn(Card[][] grid, Card curCard) {
-        // put card into the column that we care about
+        // find counts for each column
         Predicate<Card> isCard = (Card card) -> card != null;
         int[][] preferenceList = countCards(grid, isCard);
-        int columnChoice = preferenceList[rc][1];
-        int temprc = (rc+1)%HAND_SIZE;
-        while (preferenceList[temprc][0] == HAND_SIZE) {
-            columnChoice = preferenceList[temprc][1];
-            temprc = (temprc+1)%HAND_SIZE;
+        for (int i=0; i<preferenceList.length; i++) {
+            for (int j=0; j<preferenceList[i].length; j++) {
+                System.out.print(preferenceList[i][j]);
+            }
+            System.out.println();
         }
+
+        // find column with appropriate number of cards (< 5)
+        int temprc = rc;
+        int columnChoice = preferenceList[temprc][1];
+        while (preferenceList[temprc][0] >= HAND_SIZE) {
+            temprc = (temprc+1)%HAND_SIZE;
+            columnChoice = preferenceList[temprc][1];
+            if (temprc != rc) break;
+        }
+
         Card[] potentialHand = new Card[5];
-        int handLength = 0;
+        int handLength = preferenceList[temprc][0];
         for (int i=0; i<potentialHand.length; i++) {
             potentialHand[i] = grid[columnChoice][i];
-            if (potentialHand[i] != null) handLength++;
         }
-        while (handLength >= 5) {
-            for (int i=0; i<potentialHand.length; i++) {
-                potentialHand[i] = grid[rc][i];
-                if (potentialHand[i] != null) handLength ++;
-            }
-        }
+        /////////////////PRINT///////////////////////////
+        System.out.println("col: "+ columnChoice+ " length: "+ handLength);
+        /////////////////PRINT///////////////////////////
         potentialHand[handLength] = curCard;
         int handScore = pointSystem.getHandScore(potentialHand);
         int suitScore = suitCheck(potentialHand);
