@@ -3,7 +3,7 @@ import java.util.function.Predicate;
 
 public class Rule {
 
-    private final int HAND_SIZE;
+    private final int HAND_SIZE = 5;
     private final int FLUSH_SCORE;
     private final int STRAIGHT_SCORE;
     private final PokerSquaresPointSystem pointSystem;
@@ -28,7 +28,6 @@ public class Rule {
         isRightDec = true;
 
         pointSystem = ps;
-        HAND_SIZE = 5;
         FLUSH_SCORE = pointSystem.getHandScore(PokerHand.FLUSH);
         STRAIGHT_SCORE = pointSystem.getHandScore(PokerHand.STRAIGHT);
         int[] scores = pointSystem.getScoreTable();
@@ -148,12 +147,6 @@ public class Rule {
         // choose which row we'll place the card into
         Predicate<Card> isCard = (Card card) -> card != null;
         int[][] preferenceList = countCards(grid, isCard);
-        for (int i=0; i<preferenceList.length; i++) {
-            for (int j=0; j<preferenceList[i].length; j++) {
-                System.out.print(preferenceList[i][j]);
-            }
-            System.out.println();
-        }
 
         // make sure there aren't too many cards in a hand
         int temprc = rc;
@@ -161,14 +154,11 @@ public class Rule {
         while (preferenceList[temprc][0] >= HAND_SIZE) {
             temprc = (temprc+1)%HAND_SIZE;
             rowChoice = preferenceList[temprc][1];
-            if (temprc != rc) break;
+            if (temprc == rc) break;
         }
 
         Card[] potentialHand = grid[rowChoice].clone();
         int handLength = preferenceList[temprc][0];
-        /////////////////PRINT///////////////////////////
-        System.out.println("row: "+ rowChoice+ " length: "+ handLength);
-        /////////////////PRINT///////////////////////////
         potentialHand[handLength] = curCard;
         int handScore = pointSystem.getHandScore(potentialHand);
         int suitScore = suitCheck(potentialHand);
@@ -188,12 +178,6 @@ public class Rule {
         // find counts for each column
         Predicate<Card> isCard = (Card card) -> card != null;
         int[][] preferenceList = countCards(grid, isCard);
-        for (int i=0; i<preferenceList.length; i++) {
-            for (int j=0; j<preferenceList[i].length; j++) {
-                System.out.print(preferenceList[i][j]);
-            }
-            System.out.println();
-        }
 
         // find column with appropriate number of cards (< 5)
         int temprc = rc;
@@ -201,7 +185,7 @@ public class Rule {
         while (preferenceList[temprc][0] >= HAND_SIZE) {
             temprc = (temprc+1)%HAND_SIZE;
             columnChoice = preferenceList[temprc][1];
-            if (temprc != rc) break;
+            if (temprc == rc) break;
         }
 
         Card[] potentialHand = new Card[5];
@@ -209,9 +193,6 @@ public class Rule {
         for (int i=0; i<potentialHand.length; i++) {
             potentialHand[i] = grid[columnChoice][i];
         }
-        /////////////////PRINT///////////////////////////
-        System.out.println("col: "+ columnChoice+ " length: "+ handLength);
-        /////////////////PRINT///////////////////////////
         potentialHand[handLength] = curCard;
         int handScore = pointSystem.getHandScore(potentialHand);
         int suitScore = suitCheck(potentialHand);
