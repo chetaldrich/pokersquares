@@ -1,18 +1,18 @@
-import java.util.Random;
-import java.util.Arrays;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Rule {
 
-    private final Rule condition;
-    private final Rule leftRule;
-    private final Rule rightRule;
-    private final Decision leftDecision;
-    private final Decision rightDecision;
-    private final boolean makeDecision;
     private final int HAND_SIZE;
     private final int FLUSH_SCORE;
     private final int STRAIGHT_SCORE;
     private final PokerSquaresPointSystem pointSystem;
+    private boolean isRightDec;
+    private boolean isLeftDec;
+    private Rule leftRule;
+    private Rule rightRule;
+    private Decision leftDecision;
+    private Decision rightDecision;
     Random randomGenerator;
     boolean row;
     int rc;
@@ -21,15 +21,11 @@ public class Rule {
 
     public Rule(PokerSquaresPointSystem ps) {
 
-        // initialize the rule nodes
-        // TODO: Restructure so decisions can be at end of the tree
-        condition = new Rule(ps);
-        leftRule = new Rule(ps);
-        rightRule = new Rule(ps);
-
+        // it's going to have decision nodes unless told otherwise
         leftDecision = new Decision();
         rightDecision = new Decision();
-
+        isLeftDec = true;
+        isRightDec = true;
 
         pointSystem = ps;
         HAND_SIZE = 5;
@@ -37,24 +33,55 @@ public class Rule {
         STRAIGHT_SCORE = pointSystem.getHandScore(PokerHand.STRAIGHT);
         int[] scores = pointSystem.getScoreTable();
         Arrays.sort(scores);
+        // threshold is the median score
         pointThresh = scores[scores.length/2];
 
         randomGenerator = new Random();
-        // decide if this will go to more rules or to decisions
-        boolean randBool = randomGenerator.nextBoolean();
-        makeDecision = randBool;
-
         // determine if checking row or column
-        randBool = randomGenerator.nextBoolean();
+        boolean randBool = randomGenerator.nextBoolean();
         row = randBool;
 
         // which row or column to check
         int randInt = randomGenerator.nextInt(5);
         rc = randInt;
-        // at what point threshold (for a hand) should the rule go left/right
-        pointThresh = 0;
     }
 
+
+    /**
+     * Sets the right child to be a rule
+     *
+     */
+    public void setRight(Rule right) {
+        rightRule = right;
+        isRightDec = false;
+    }
+
+    /**
+     * Sets the right child to be a decision
+     *
+     */
+    public void setRight(Decision right) {
+        rightDecision = right;
+        isRightDec = true;
+    }
+
+    /**
+     * Sets the left child to be a rule
+     *
+     */
+    public void setLeft(Rule left) {
+        leftRule = left;
+        isLeftDec = false;
+    }
+
+    /**
+     * Sets the left child to be a decision
+     *
+     */
+    public void setLeft(Decision left) {
+        leftDecision = left;
+        isLeftDec = true;
+    }
 
     /**
      * @return A String that represents the function or value of this node.
@@ -65,6 +92,53 @@ public class Rule {
     }
 
     /**
+     * Counts the cards in the row/column that fit a certain criterion
+     * @return A list of counts sorted by the criterion in rows/columns.
+     */
+     private int[][] countCards(Card[][] grid, Predicate<Card> filter) {
+        int[][] counts = new int[5][2];
+        // make the second entry in each count the row/col number
+        for (int i = 1; i < 5; i++) {
+            counts[i][1] = i;
+        }
+
+        // count the number of entries in each row/col
+        if (row) {
+            // row
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 5; col++) {
+                    if (filter.test(grid[row][col])) {
+                        counts[row][0]++;
+                    }
+                }
+            }
+        } else {
+            // column
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 5; col++) {
+                    if (filter.test(grid[col][row])) {
+                        counts[row][0]++;
+                    }
+                }
+            }
+        }
+        // compares 2 dimensional int arrays
+        Arrays.sort(counts, new Comparator<int[]>() {
+        @Override
+        public int compare(final int[] item1, final int[] item2) {
+            // randomize if the values are the same
+            if (item2[0] - item1[0] == 0) {
+                return randomGenerator.nextBoolean() ? 1 : -1;
+            }
+            // otherwise, return the normal comparator
+            return item2[0] - item1[0];
+        }
+        });
+
+        return counts;
+    }
+
+    /**
      * Checks a given row number, places the card somewhere in the row,
      * and then checks what kind of hand it gives, and returns the value of
      * the hand.
@@ -72,7 +146,15 @@ public class Rule {
      */
     private boolean checkRow(Card[][] grid, Card curCard) {
         // put card into the row that we care about
-        Card[] potentialHand = grid[rc];
+        Predicate<Card> isCard = (Card card) -> card != null;
+        int[][] preferenceList = countCards(grid, isCard);
+        int rowChoice = preferenceList[rc][1];
+        int temprc = rc+1;
+        while (preferenceList[temprc][0] == HAND_SIZE) {
+            rowChoice = preferenceList[temprc][1];
+            temprc = (temprc+1)%HAND_SIZE;
+        }
+        Card[] potentialHand = grid[rowChoice];
         int handLength = 0;
         for (int i=0; i<potentialHand.length; i++) {
             if (potentialHand[i] != null) handLength ++;
@@ -81,7 +163,7 @@ public class Rule {
             int nextRC = (rc+1)%HAND_SIZE;
             potentialHand = grid[rc];
             for (int i=0; i<potentialHand.length; i++) {
-                if (potentialHand[i] != null) handLength ++;
+                if (potentialHand[i] != null) handLength++;
             }
         }
         potentialHand[handLength] = curCard;
@@ -101,11 +183,19 @@ public class Rule {
      */
     private boolean checkColumn(Card[][] grid, Card curCard) {
         // put card into the column that we care about
+        Predicate<Card> isCard = (Card card) -> card != null;
+        int[][] preferenceList = countCards(grid, isCard);
+        int columnChoice = preferenceList[rc][1];
+        int temprc = rc+1;
+        while (preferenceList[temprc][0] == HAND_SIZE) {
+            columnChoice = preferenceList[temprc][1];
+            temprc = (temprc+1)%HAND_SIZE;
+        }
         Card[] potentialHand = new Card[5];
         int handLength = 0;
         for (int i=0; i<potentialHand.length; i++) {
-            potentialHand[i] = grid[rc][i];
-            if (potentialHand[i] != null) handLength ++;
+            potentialHand[i] = grid[columnChoice][i];
+            if (potentialHand[i] != null) handLength++;
         }
         while (handLength >= 5) {
             for (int i=0; i<potentialHand.length; i++) {
@@ -143,6 +233,7 @@ public class Rule {
             return (FLUSH_SCORE/(HAND_SIZE-maxSuit));
         }
     }
+    
 
     /**
      * 
@@ -181,12 +272,20 @@ public class Rule {
      * Evaluates the node at this level and returns one of the child nodes.
      * @return A boolean, indicating which direction to move in the tree.
      */
-    public boolean evaluate(Card[][] grid, Card curCard) {
+    public int[] evaluate(Card[][] grid, Card curCard) {
         boolean direction = row
         ? checkRow(grid, curCard)
         : checkColumn(grid, curCard);
-
-        return direction;
+        
+        if (direction) {
+            return isRightDec
+            ? rightDecision.evaluate(grid,curCard)
+            : rightRule.evaluate(grid,curCard);
+        } else {
+            return isLeftDec
+            ? leftDecision.evaluate(grid,curCard)
+            : leftRule.evaluate(grid,curCard);
+        }
     }
 
     /**
@@ -194,15 +293,21 @@ public class Rule {
      * @param decisions The boolean index of a child rule.
      * 0 (false) is left, 1 (true) is right.
      * @return The node at the specified position.
+     *
+     * removing for the time being because unsure about 
+     * how to return two difference types
      */
-    Rule getChild(boolean decision) {
-        // if (makeDecision) {
-        //     return decision ? rightDecision : leftDecision;
-        // } else {
-        //     return decision ? rightRule : leftRule;
-        // }
-        return decision ? rightRule : leftRule;
-    }
+    // Rule getChild(boolean direction) {
+    //     if (direction) {
+    //         return isRightDec
+    //         ? rightDecision
+    //         : rightRule;
+    //     } else {
+    //         return isLeftDec
+    //         ? leftDecision
+    //         : leftRule;
+    //     }
+    // }
 
 
 }
