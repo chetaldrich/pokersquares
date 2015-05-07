@@ -149,7 +149,7 @@ public class Rule {
         Predicate<Card> isCard = (Card card) -> card != null;
         int[][] preferenceList = countCards(grid, isCard);
         int rowChoice = preferenceList[rc][1];
-        int temprc = rc+1;
+        int temprc = (rc+1)%HAND_SIZE;
         while (preferenceList[temprc][0] == HAND_SIZE) {
             rowChoice = preferenceList[temprc][1];
             temprc = (temprc+1)%HAND_SIZE;
@@ -186,7 +186,7 @@ public class Rule {
         Predicate<Card> isCard = (Card card) -> card != null;
         int[][] preferenceList = countCards(grid, isCard);
         int columnChoice = preferenceList[rc][1];
-        int temprc = rc+1;
+        int temprc = (rc+1)%HAND_SIZE;
         while (preferenceList[temprc][0] == HAND_SIZE) {
             columnChoice = preferenceList[temprc][1];
             temprc = (temprc+1)%HAND_SIZE;
@@ -222,18 +222,20 @@ public class Rule {
             suitCount[i] = 0;
         }
         int maxSuit = 0;
-        for (int i=0; i<hand.length; i++) {
-            int suit = hand[i].getSuit();
-            suitCount[suit]++;
-            if (suitCount[suit] > maxSuit) maxSuit = suitCount[suit];
+        for (int i=0; i<HAND_SIZE; i++) {
+            if (hand[i] != null) {
+                int suit = hand[i].getSuit();
+                suitCount[suit]++;
+                if (suitCount[suit] > maxSuit) maxSuit = suitCount[suit];
+            }
         }
-        if (maxSuit == 0) {
-            return -101;
+        if (maxSuit == HAND_SIZE) {
+            return FLUSH_SCORE;
         } else {
             return (FLUSH_SCORE/(HAND_SIZE-maxSuit));
         }
     }
-    
+
 
     /**
      * 
@@ -261,8 +263,8 @@ public class Rule {
                 }
             }
         }
-        if (seqCount == 0) {
-            return -101;
+        if (seqCount == HAND_SIZE) {
+            return STRAIGHT_SCORE;
         } else {
             return (STRAIGHT_SCORE/(HAND_SIZE-seqCount));
         }

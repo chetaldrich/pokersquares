@@ -5,11 +5,15 @@ public class GeneticPlayer implements PokerSquaresPlayer {
     private final int SIZE = 5; // grid dimension
     private Card[][] grid = new Card[SIZE][SIZE]; // Card grid
     private int numPlays = 0; // number of Cards played into the grid so far
-    // private PokerSquaresPointSystem system; // point system
+    private PokerSquaresPointSystem system; // point system
+    private Rule headNode;
 
 
 
-    public GeneticPlayer() {}
+    public GeneticPlayer(PokerSquaresPointSystem system) {
+        this.system = system;
+        headNode = new Rule(system);
+    }
 
 
     @Override
@@ -43,7 +47,7 @@ public class GeneticPlayer implements PokerSquaresPlayer {
     public int[] getPlay(Card card, long millisRemaining) {
         // TODO: actually start picking moves;
         // only picks a single move.
-        int[] playPosition = {1, 1};
+        int[] playPosition = headNode.evaluate(grid,card);
         addToGrid(card, playPosition);
         return playPosition;
     }
@@ -60,7 +64,7 @@ public class GeneticPlayer implements PokerSquaresPlayer {
         System.out.println(system);
 
         // play a single game
-        new PokerSquares(new GeneticPlayer(), system).play();
+        new PokerSquares(new GeneticPlayer(system), system).play();
 
     }
 
