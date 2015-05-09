@@ -35,4 +35,10 @@ public interface Node {
      */
     public Node getChild(boolean direction);
 
+    /**
+     * Change the parameters within the node
+     * sometimes change the children
+     */
+    public void mutate();
+
 }

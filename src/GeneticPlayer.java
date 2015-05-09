@@ -10,15 +10,14 @@ public class GeneticPlayer implements PokerSquaresPlayer {
 
 
 
-    public GeneticPlayer(PokerSquaresPointSystem system) {
-        this.system = system;
-        headNode = new Rule(system);
+    public GeneticPlayer() {
     }
 
 
     @Override
     public void setPointSystem(PokerSquaresPointSystem system, long millis) {
-
+        this.system = system;
+        headNode = new Rule(system);
     }
 
 
@@ -68,12 +67,19 @@ public class GeneticPlayer implements PokerSquaresPlayer {
         System.out.println(system);
 
         GeneticPlayer gp = new GeneticPlayer(system);
+        // Node head = gp.getHead();
+        // head.setRight(new Rule(system));
+        // head.setLeft(new Rule(system));
+        PokerSquares ps = new PokerSquares(gp, system);
         Node head = gp.getHead();
         head.setRight(new Rule(system));
         head.setLeft(new Rule(system));
-        PokerSquares ps = new PokerSquares(gp, system);
         ps.playSequence(100, 0, false);
-        System.out.println(head.getLabel()+" "+head.getChild(true).getLabel()+" "+head.getChild(false).getLabel());
+        // System.out.println(head.getLabel()+" "+head.getChild(true).getLabel()+" "+head.getChild(false).getLabel());
+        
+        RandomPlayer rp = new RandomPlayer();
+        PokerSquares ps2 = new PokerSquares(rp, system);
+        // ps2.playSequence(1000,0,false);
         // int max = -101;
         // int sum = 0;
         // int[] scores = new int[NUM_GAMES];
