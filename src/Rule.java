@@ -1,18 +1,14 @@
 import java.util.*;
 import java.util.function.Predicate;
 
-public class Rule {
+public class Rule implements Node {
 
     private final int HAND_SIZE = 5;
     private final int FLUSH_SCORE;
     private final int STRAIGHT_SCORE;
     private final PokerSquaresPointSystem pointSystem;
-    private boolean isRightDec;
-    private boolean isLeftDec;
-    private Rule leftRule;
-    private Rule rightRule;
-    private Decision leftDecision;
-    private Decision rightDecision;
+    private Node leftChild;
+    private Node rightChild;
     Random randomGenerator;
     boolean row;
     int rc;
@@ -22,10 +18,8 @@ public class Rule {
     public Rule(PokerSquaresPointSystem ps) {
 
         // it's going to have decision nodes unless told otherwise
-        leftDecision = new Decision();
-        rightDecision = new Decision();
-        isLeftDec = true;
-        isRightDec = true;
+        leftChild = new Decision();
+        rightChild = new Decision();
 
         pointSystem = ps;
         FLUSH_SCORE = pointSystem.getHandScore(PokerHand.FLUSH);
@@ -47,46 +41,29 @@ public class Rule {
 
 
     /**
-     * Sets the right child to be a rule
+     * Sets the right child
      *
      */
-    public void setRight(Rule right) {
-        rightRule = right;
-        isRightDec = false;
-    }
-
-    /**
-     * Sets the right child to be a decision
-     *
-     */
-    public void setRight(Decision right) {
-        rightDecision = right;
-        isRightDec = true;
+    public void setRight(Node right) {
+        rightChild = right;
     }
 
     /**
      * Sets the left child to be a rule
      *
      */
-    public void setLeft(Rule left) {
-        leftRule = left;
-        isLeftDec = false;
+    public void setLeft(Node left) {
+        leftChild = left;
     }
 
-    /**
-     * Sets the left child to be a decision
-     *
-     */
-    public void setLeft(Decision left) {
-        leftDecision = left;
-        isLeftDec = true;
-    }
 
     /**
      * @return A String that represents the function or value of this node.
      */
-    String getLabel() {
-        String label = "Label based on row/col, rank/straight/suit";
+    public String getLabel() {
+        String rowOrCol = row ? "row" : "column";
+        String rcnum = Integer.toString(rc);
+        String label = "Check the "+rowOrCol+" ranked "+rcnum;
         return label;
     }
 
@@ -269,15 +246,9 @@ public class Rule {
         ? checkRow(grid, curCard)
         : checkColumn(grid, curCard);
         
-        if (direction) {
-            return isRightDec
-            ? rightDecision.evaluate(grid,curCard)
-            : rightRule.evaluate(grid,curCard);
-        } else {
-            return isLeftDec
-            ? leftDecision.evaluate(grid,curCard)
-            : leftRule.evaluate(grid,curCard);
-        }
+        return direction
+        ? rightChild.evaluate(grid, curCard)
+        : leftChild.evaluate(grid, curCard);
     }
 
     /**
@@ -285,21 +256,10 @@ public class Rule {
      * @param decisions The boolean index of a child rule.
      * 0 (false) is left, 1 (true) is right.
      * @return The node at the specified position.
-     *
-     * removing for the time being because unsure about 
-     * how to return two difference types
      */
-    // Rule getChild(boolean direction) {
-    //     if (direction) {
-    //         return isRightDec
-    //         ? rightDecision
-    //         : rightRule;
-    //     } else {
-    //         return isLeftDec
-    //         ? leftDecision
-    //         : leftRule;
-    //     }
-    // }
+    public Node getChild(boolean direction) {
+        return direction ? rightChild : leftChild;
+    }
 
 
 }

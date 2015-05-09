@@ -12,7 +12,7 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 - [x] Check hand against the card that was just flipped.
 - [x] Rule only occurs at non-terminal points in the tree.
 - [x] Rule puts card into row/column and checks what hand it returns in point system
-- [ ] Implement replaceNode()
+- [x] Implement setNode()
 - [ ] Implement mutation
 - [x] Row/column placement based on ranking
 

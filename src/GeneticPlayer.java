@@ -1,4 +1,4 @@
-
+import java.util.*;
 
 public class GeneticPlayer implements PokerSquaresPlayer {
 
@@ -6,7 +6,7 @@ public class GeneticPlayer implements PokerSquaresPlayer {
     private Card[][] grid = new Card[SIZE][SIZE]; // Card grid
     private int numPlays = 0; // number of Cards played into the grid so far
     private PokerSquaresPointSystem system; // point system
-    private Rule headNode;
+    private Node headNode;
 
 
 
@@ -30,6 +30,10 @@ public class GeneticPlayer implements PokerSquaresPlayer {
                 grid[row][col] = null;
         // reset number of plays
         numPlays = 0;
+    }
+
+    public Node getHead() {
+        return headNode;
     }
 
 
@@ -60,12 +64,31 @@ public class GeneticPlayer implements PokerSquaresPlayer {
 
 
     public static void main(String[] args) {
-        PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmeritishPointSystem();
+        PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmericanPointSystem();
         System.out.println(system);
 
-        // play a single game
-        new PokerSquares(new GeneticPlayer(system), system).play();
-
+        GeneticPlayer gp = new GeneticPlayer(system);
+        Node head = gp.getHead();
+        head.setRight(new Rule(system));
+        head.setLeft(new Rule(system));
+        PokerSquares ps = new PokerSquares(gp, system);
+        ps.playSequence(100, 0, false);
+        System.out.println(head.getLabel()+" "+head.getChild(true).getLabel()+" "+head.getChild(false).getLabel());
+        // int max = -101;
+        // int sum = 0;
+        // int[] scores = new int[NUM_GAMES];
+        // for (int i=0; i<NUM_GAMES; i++) {
+        //     // play a single game
+        //     GeneticPlayer gp = new GeneticPlayer(system);
+        //     gp.getHead().setRight(new Rule(system));
+        //     gp.getHead().setLeft(new Rule(system));
+        //     PokerSquares ps = new PokerSquares(gp, system);
+        //     scores[i] = ps.play();
+        //     if (scores[i]>max) max = scores[i];
+        //     sum += scores[i];
+        // }
+        // double ave = 1.0*sum/NUM_GAMES;
+        // System.out.println("Average score: " + ave + " Best: " + max);
     }
 
 }

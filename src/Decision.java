@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class Decision {
+public class Decision implements Node {
 
     /**
      * Boolean for row or column property.
@@ -293,5 +293,30 @@ public class Decision {
             default:
                 return placeRandom(grid, drawnCard);
         }
+    }
+
+    /**
+     * Sets the right child
+     *
+     */
+    public void setRight(Node right) {
+    }
+
+
+    /**
+     * Sets the left child
+     *
+     */
+    public void setLeft(Node left) {
+    }
+
+    /**
+     * Retrieves a direct sub-rule from this rule.
+     * @param decisions The boolean index of a child rule.
+     * 0 (false) is left, 1 (true) is right.
+     * @return The node at the specified position.
+     */
+    public Node getChild(boolean direction) {
+        return null;
     }
 }
