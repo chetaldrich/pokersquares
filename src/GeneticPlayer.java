@@ -66,7 +66,7 @@ public class GeneticPlayer implements PokerSquaresPlayer {
         PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmericanPointSystem();
         System.out.println(system);
 
-        GeneticPlayer gp = new GeneticPlayer(system);
+        GeneticPlayer gp = new GeneticPlayer();
         // Node head = gp.getHead();
         // head.setRight(new Rule(system));
         // head.setLeft(new Rule(system));
@@ -76,7 +76,7 @@ public class GeneticPlayer implements PokerSquaresPlayer {
         head.setLeft(new Rule(system));
         ps.playSequence(100, 0, false);
         // System.out.println(head.getLabel()+" "+head.getChild(true).getLabel()+" "+head.getChild(false).getLabel());
-        
+
         RandomPlayer rp = new RandomPlayer();
         PokerSquares ps2 = new PokerSquares(rp, system);
         // ps2.playSequence(1000,0,false);

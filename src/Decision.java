@@ -226,7 +226,7 @@ public class Decision implements Node {
      * and then chooses from ties randomly.
      * @return A position in the grid
      */
-    private int[] placeLeft() {
+    private int[] placeLeft(Card[][] grid, Card drawnCard) {
         // TODO: implement
         int[] position = {1,1};
         return position;
@@ -294,6 +294,16 @@ public class Decision implements Node {
                 return placeRandom(grid, drawnCard);
         }
     }
+
+    /**
+     * Changes, with a random probability, this decision into
+     * another type, or changes it into a rule and gives it two
+     * decision nodes below it.
+     */
+    public void mutate() {
+
+    }
+
 
     /**
      * Sets the right child
