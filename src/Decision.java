@@ -14,18 +14,21 @@ public class Decision implements Node {
      * True = row
      * False = column
      */
-    boolean rc;
+    private boolean rc;
 
     /**
      * Stores which function to use for decision.
      */
-    String decisionType;
-    Random randomGenerator;
+    private final String decisionType;
+    private Random randomGenerator;
+    private final PokerSquaresPointSystem system;
 
 
-    public Decision() {
-        decisionType = decideLabel();
+
+    public Decision(PokerSquaresPointSystem system) {
+        this.decisionType = decideLabel();
         this.rc = rc;
+        this.system = system;
     }
 
     /**
@@ -295,10 +298,24 @@ public class Decision implements Node {
     /**
      * Changes, with a random probability, this decision into
      * another type, or changes it into a rule and gives it two
-     * decision nodes below it.
+     * decision nodes below it. Returns the new Node.
+     * @param boolean: True for Decision, False for Rule
      */
-    public void mutate() {
-
+    public Node mutate(boolean type) {
+        if (type) {
+            // if true, returns a new mutated decision node.
+            Decision newDecision = new Decision(system);
+            return newDecision;
+        } else {
+            // if false, creates a rule and associated decisions
+            // and returns the Rule.
+            Rule newRule = new Rule(system);
+            Decision newLeft = new Decision(system);
+            Decision newRight = new Decision(system);
+            newRule.setLeft(newLeft);
+            newRule.setRight(newRight);
+            return newRule;
+        }
     }
 
 

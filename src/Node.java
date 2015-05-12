@@ -38,7 +38,8 @@ public interface Node {
     /**
      * Change the parameters within the node
      * sometimes change the children
+     * @param type of Node (True = Decision, False = Rule)
      */
-    public void mutate();
+    public Node mutate(boolean type);
 
 }
