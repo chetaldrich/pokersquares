@@ -30,6 +30,7 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 - [x] Create a Decision class
 - [ ] Implement replaceNode()
 - [ ] Implement mutation
+- [ ] Implement Node
 
 
 ##### Types of Decisions to Implement
