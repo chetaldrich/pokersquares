@@ -129,7 +129,7 @@ public class Rule implements Node {
         int temprc = rc;
         int rowChoice = preferenceList[temprc][1];
         while (preferenceList[temprc][0] >= HAND_SIZE) {
-            temprc = (temprc+1)%HAND_SIZE;
+            temprc = (temprc+1) % HAND_SIZE;
             rowChoice = preferenceList[temprc][1];
             if (temprc == rc) break;
         }
@@ -160,7 +160,7 @@ public class Rule implements Node {
         int temprc = rc;
         int columnChoice = preferenceList[temprc][1];
         while (preferenceList[temprc][0] >= HAND_SIZE) {
-            temprc = (temprc+1)%HAND_SIZE;
+            temprc = (temprc + 1) % HAND_SIZE;
             columnChoice = preferenceList[temprc][1];
             if (temprc == rc) break;
         }
@@ -180,16 +180,18 @@ public class Rule implements Node {
     }
 
     /**
-     * 
-     * @return An int
+     * Checks for groups of suits in the hand, and then
+     * determines whether there is a flush. If there is a
+     * partial flush, scales down the score.
+     * @return A score for the hand based on flush potential.
      */
     private int suitCheck(Card[] hand) {
         int[] suitCount = new int[HAND_SIZE];
-        for (int i=0; i<HAND_SIZE; i++) {
+        for (int i = 0; i < HAND_SIZE; i++) {
             suitCount[i] = 0;
         }
         int maxSuit = 0;
-        for (int i=0; i<HAND_SIZE; i++) {
+        for (int i = 0; i < HAND_SIZE; i++) {
             if (hand[i] != null) {
                 int suit = hand[i].getSuit();
                 suitCount[suit]++;
@@ -205,27 +207,29 @@ public class Rule implements Node {
 
 
     /**
-     * 
-     * @return An int
+     * Checks for sequences in the given hand and returns
+     * the score for the straight, and if the sequence is partial,
+     * returns a scale down value for the score.
+     * @return A score for the hand based on straight potential.
      */
     private int seqCheck(Card[] hand) {
         int[] ranks = new int[HAND_SIZE];
-        for (int i=0; i<HAND_SIZE; i++) {
+        for (int i = 0; i < HAND_SIZE; i++) {
             if (hand[i] == null) {
                 ranks[i] = 0;
             } else {
-                ranks[i] = hand[i].getRank();                
+                ranks[i] = hand[i].getRank();
             }
         }
         Arrays.sort(ranks);
         int first = 0;
         int seqCount = 0;
-        for (int i=0; i<HAND_SIZE; i++) {
+        for (int i = 0; i < HAND_SIZE; i++) {
             if (ranks[i] != 0) {
                 if (first == 0) {
                     first = ranks[i];
                 }
-                if (ranks[i]-first < 5) {
+                if (ranks[i] - first < 5) {
                     seqCount++;
                 }
             }
@@ -233,7 +237,7 @@ public class Rule implements Node {
         if (seqCount == HAND_SIZE) {
             return STRAIGHT_SCORE;
         } else {
-            return (STRAIGHT_SCORE/(HAND_SIZE-seqCount));
+            return (STRAIGHT_SCORE/(HAND_SIZE - seqCount));
         }
     }
 
@@ -245,7 +249,7 @@ public class Rule implements Node {
         boolean direction = row
         ? checkRow(grid, curCard)
         : checkColumn(grid, curCard);
-        
+
         return direction
         ? rightChild.evaluate(grid, curCard)
         : leftChild.evaluate(grid, curCard);
@@ -260,6 +264,15 @@ public class Rule implements Node {
     public Node getChild(boolean direction) {
         return direction ? rightChild : leftChild;
     }
+
+    /**
+     * Change the parameters within the node
+     * sometimes change the children
+     */
+    public void mutate() {
+        
+    }
+
 
 
 }

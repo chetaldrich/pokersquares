@@ -25,8 +25,7 @@ public class Decision implements Node {
 
     public Decision() {
         decisionType = decideLabel();
-
-
+        this.rc = rc;
     }
 
     /**
@@ -71,12 +70,12 @@ public class Decision implements Node {
     }
 
 
-
     /**
      * Counts the cards in the row/column that fit a certain criterion
      * @return A list of counts sorted by the criterion in rows/columns.
      */
      private int[][] countCards(Card[][] grid, Predicate<Card> filter) {
+
         int[][] counts = new int[5][2];
         // make the second entry in each count the row/col number
         for (int i = 1; i < 5; i++) {
@@ -126,7 +125,9 @@ public class Decision implements Node {
      * @return A position in the grid
      */
     private int[] placeCard(Card[][] grid,
-                            int[][] preferenceList, Card drawnCard) {
+                            int[][] preferenceList,
+                            Card drawnCard,
+                            boolean rc) {
         // loop through each row/col as necessary to find a place
         // to play the card.
         for (int listPosition = 0; listPosition < 5; listPosition++) {
@@ -161,7 +162,7 @@ public class Decision implements Node {
     private int[] leastCards(Card[][] grid, Card drawnCard) {
         Predicate<Card> isNotCard = (Card card) -> card == null;
         int[][] preferenceList = countCards(grid, isNotCard);
-        return placeCard(grid, preferenceList, drawnCard);
+        return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
 
     /**
@@ -172,7 +173,7 @@ public class Decision implements Node {
     private int[] mostCards(Card[][] grid, Card drawnCard) {
         Predicate<Card> isCard = (Card card) -> card != null;
         int[][] preferenceList = countCards(grid, isCard);
-        return placeCard(grid, preferenceList, drawnCard);
+        return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
 
     /**
@@ -189,7 +190,7 @@ public class Decision implements Node {
         int[][] preferenceList = countCards(grid, isSameSuit);
         // NOTE: might be worth it to play in a row/col that is empty
         // over a random row to build flushes.
-        return placeCard(grid, preferenceList, drawnCard);
+        return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
 
     /**
@@ -206,7 +207,7 @@ public class Decision implements Node {
         int[][] preferenceList = countCards(grid, isSameRank);
         // NOTE: might be worth it to play in a row/col that is empty
         // over a random row to build 3 and 4 of a kind.
-        return placeCard(grid, preferenceList, drawnCard);
+        return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
 
     /**
@@ -215,7 +216,7 @@ public class Decision implements Node {
      * in that row/column.
      * @return A position in the grid
      */
-    private int[] extendStraight() {
+    private int[] extendStraight(Card[][] grid, Card drawnCard) {
         // TODO: implement
         int[] position = {1,1};
         return position;
@@ -226,10 +227,9 @@ public class Decision implements Node {
      * and then chooses from ties randomly.
      * @return A position in the grid
      */
-    private int[] placeLeft() {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+    private int[] placeLeft(Card[][] grid, Card drawnCard) {
+        int[][] preferenceList = {{5, 0}, {4, 1}, {3, 2}, {2, 3}, {1, 4}};
+        return placeCard(grid, preferenceList, drawnCard, false);
     }
 
     /**
@@ -237,10 +237,9 @@ public class Decision implements Node {
      * that the card can be placed, and then chooses from ties randomly.
      * @return A position in the grid
      */
-    private int[] placeTop() {
-        // TODO: implement
-        int[] position = {1,1};
-        return position;
+    private int[] placeTop(Card[][] grid, Card drawnCard) {
+        int[][] preferenceList = {{5, 0}, {4, 1}, {3, 2}, {2, 3}, {1, 4}};
+        return placeCard(grid, preferenceList, drawnCard, true);
     }
 
     /**
@@ -282,12 +281,10 @@ public class Decision implements Node {
             // case "extendStraight":
             //     // needs to be implemented
             //     return extendStraight(grid, drawnCard);
-            // case "placeLeft":
-            //     // needs to be implemented
-            //     return placeLeft(grid, drawnCard);
-            // case "placeTop":
-            //     // needs to be implemented
-            //     return placeTop(grid, drawnCard);
+            case "placeLeft":
+                return placeLeft(grid, drawnCard);
+            case "placeTop":
+                return placeTop(grid, drawnCard);
             case "placeRandom":
                 return placeRandom(grid, drawnCard);
             default:
@@ -296,19 +293,27 @@ public class Decision implements Node {
     }
 
     /**
+     * Changes, with a random probability, this decision into
+     * another type, or changes it into a rule and gives it two
+     * decision nodes below it.
+     */
+    public void mutate() {
+
+    }
+
+
+    /**
      * Sets the right child
      *
      */
-    public void setRight(Node right) {
-    }
+    public void setRight(Node right) {}
 
 
     /**
      * Sets the left child
      *
      */
-    public void setLeft(Node left) {
-    }
+    public void setLeft(Node left) {}
 
     /**
      * Retrieves a direct sub-rule from this rule.

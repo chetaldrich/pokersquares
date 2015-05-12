@@ -39,14 +39,14 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 - [x] row/col with most of a suit
 - [x] row/col with most of a rank
 - [ ] row/col extends straight
-- [ ] random()
-- [ ] left() // as left as possible
-- [ ] up() // as up as possible
+- [x] random()
+- [x] left() // as left as possible
+- [x] up() // as up as possible
 
 
-#### public class Forest()
+#### public class ChromosomeFactory()
 
-- [ ] Create Forest (TreeFactory) class
+- [x] Create ChromosomeFactory class
 - [ ] Figure out depth limit for trees
 - [ ] Implement a general fitness function (score over games)
 - [ ] Make a mutation engine (for some with a small probability)
