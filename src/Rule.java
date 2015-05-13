@@ -17,11 +17,13 @@ public class Rule implements Node {
 
     public Rule(PokerSquaresPointSystem ps) {
 
-        // it's going to have decision nodes unless told otherwise
-        leftChild = new Decision();
-        rightChild = new Decision();
+        this.pointSystem = ps;
 
-        pointSystem = ps;
+
+        // it's going to have decision nodes unless told otherwise
+        leftChild = new Decision(pointSystem);
+        rightChild = new Decision(pointSystem);
+
         FLUSH_SCORE = pointSystem.getHandScore(PokerHand.FLUSH);
         STRAIGHT_SCORE = pointSystem.getHandScore(PokerHand.STRAIGHT);
         int[] scores = pointSystem.getScoreTable();
@@ -269,8 +271,8 @@ public class Rule implements Node {
      * Change the parameters within the node
      * sometimes change the children
      */
-    public void mutate() {
-        
+    public Node mutate(boolean type) {
+        return new Rule(pointSystem);
     }
 
 

@@ -3,9 +3,11 @@ import java.util.*;
 public class ChromosomeFactory {
     private final int LENGTH = 100;
     private ArrayList<Rule> ruleList;
+    PokerSquaresPointSystem pointSystem;
 
-    public ChromosomeFactory() {
+    public ChromosomeFactory(PokerSquaresPointSystem psps) {
         ruleList = new ArrayList<Rule>(LENGTH);
+        pointSystem = psps;
     }
 
 
@@ -18,13 +20,30 @@ public class ChromosomeFactory {
     }
 
 
+    private double average(int[] scores) {
+        int total = 0;
+        for (int i=0; i<scores.length; i++) {
+            total += scores;
+        }
+        double aveDouble = (double)total/scores.length;
+        int aveInt = (int)Math.round(aveDouble)
+        return aveInt;
+    }
+
     /**
      * Determine the fitness of each of the trees.
      * Runs 50-100 (?) games and averages to determine the
      * fitness of each tree.
      */
     public int[] assessFitness() {
-        int[] fitnesses = {1, 2};
+        int[] fitnesses = new int[LENGTH];
+        for (int i=0; i<LENGTH; i++) {
+            FitnessGeneticPlayer fgp = new FitnessGeneticPlayer();
+            fgp.setHead(ruleList.get(i));
+            PokerSquares evaluator = new PokerSquares(fgp, pointSystem);
+            int[] scores = evaluator.playSequence(100,0,false);
+            fitnesses[i] = average(scores);
+        }
         return fitnesses;
     }
 
