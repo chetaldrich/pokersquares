@@ -16,10 +16,14 @@ public class ChromosomeFactory {
      *
      */
     public void createChromosomes() {
-
+        for (int i=0; i<LENGTH; i++) {
+            ruleList.add(new Rule(pointSystem));
+        }
     }
 
-
+    /**
+     * Averages an array of integers
+     */
     private int average(int[] scores) {
         int total = 0;
         for (int i=0; i<scores.length; i++) {
@@ -42,7 +46,7 @@ public class ChromosomeFactory {
             fgp.setPointSystem(pointSystem,0);
             fgp.setHead(ruleList.get(i));
             PokerSquares evaluator = new PokerSquares(fgp, pointSystem);
-            int[] scores = evaluator.playSequence(100,0,false);
+            int[] scores = evaluator.playSequence(50,0,false);
             fitnesses[i][0] = average(scores);
             fitnesses[i][1] = i;
         }
@@ -60,6 +64,12 @@ public class ChromosomeFactory {
                 return Integer.compare(a[0], b[0]);
             }
         });
+        for (int i=0; i<LENGTH; i++) {
+            for (int j=0; j<2; j++) {
+                System.out.print(fitnesses[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 
 
@@ -94,6 +104,17 @@ public class ChromosomeFactory {
      *
      */
     private void breedChromosome() {
+
+    }
+
+
+    public static void main(String[] args) {
+        PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmericanPointSystem();
+        System.out.println(system);
+
+        ChromosomeFactory chrome = new ChromosomeFactory(system);
+        chrome.createChromosomes();
+        chrome.selectNextGeneration();
 
     }
 
