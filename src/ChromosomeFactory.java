@@ -20,13 +20,13 @@ public class ChromosomeFactory {
     }
 
 
-    private double average(int[] scores) {
+    private int average(int[] scores) {
         int total = 0;
         for (int i=0; i<scores.length; i++) {
-            total += scores;
+            total += scores[i];
         }
         double aveDouble = (double)total/scores.length;
-        int aveInt = (int)Math.round(aveDouble)
+        int aveInt = (int)Math.round(aveDouble);
         return aveInt;
     }
 
@@ -35,14 +35,16 @@ public class ChromosomeFactory {
      * Runs 50-100 (?) games and averages to determine the
      * fitness of each tree.
      */
-    public int[] assessFitness() {
-        int[] fitnesses = new int[LENGTH];
+    private int[][] assessFitness() {
+        int[][] fitnesses = new int[LENGTH][2];
         for (int i=0; i<LENGTH; i++) {
             FitnessGeneticPlayer fgp = new FitnessGeneticPlayer();
+            fgp.setPointSystem(pointSystem,0);
             fgp.setHead(ruleList.get(i));
             PokerSquares evaluator = new PokerSquares(fgp, pointSystem);
             int[] scores = evaluator.playSequence(100,0,false);
-            fitnesses[i] = average(scores);
+            fitnesses[i][0] = average(scores);
+            fitnesses[i][1] = i;
         }
         return fitnesses;
     }
@@ -50,10 +52,14 @@ public class ChromosomeFactory {
 
     /**
      * Determines which chromosomes move to the next generation.
-     * @param array of fitnesses of each chromosome.
      */
-    public void selectNextGeneration(int[] assessFitness) {
-
+    public void selectNextGeneration() {
+        int[][] fitnesses = assessFitness();
+        Arrays.sort(fitnesses, new Comparator<int[]>() {
+            public int compare(int[] a, int[] b) {
+                return Integer.compare(a[0], b[0]);
+            }
+        });
     }
 
 

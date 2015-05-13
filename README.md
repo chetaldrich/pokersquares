@@ -48,7 +48,7 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 
 - [x] Create ChromosomeFactory class
 - [ ] Figure out depth limit for trees
-- [ ] Implement a general fitness function (score over games)
+- [x] Implement a general fitness function (score over games)
 - [ ] Make a mutation engine (for some with a small probability)
 - [ ] Implement candidate selection for crossover
 - [ ] Implement crossover
