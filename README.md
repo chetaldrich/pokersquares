@@ -13,7 +13,7 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 - [x] Rule only occurs at non-terminal points in the tree.
 - [x] Rule puts card into row/column and checks what hand it returns in point system
 - [x] Implement setNode()
-- [ ] Implement mutation
+- [x] Implement mutation
 - [x] Row/column placement based on ranking
 
 ##### Determining score?
@@ -29,8 +29,8 @@ Documentation for the contest code is available [here](http://cs.gettysburg.edu/
 
 - [x] Create a Decision class
 - [ ] Implement replaceNode()
-- [ ] Implement mutation
-- [ ] Implement Node
+- [x] Implement mutation
+- [x] Implement Node
 
 
 ##### Types of Decisions to Implement

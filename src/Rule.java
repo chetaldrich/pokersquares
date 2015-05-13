@@ -6,7 +6,7 @@ public class Rule implements Node {
     private final int HAND_SIZE = 5;
     private final int FLUSH_SCORE;
     private final int STRAIGHT_SCORE;
-    private final PokerSquaresPointSystem pointSystem;
+    private final PokerSquaresPointSystem system;
     private Node leftChild;
     private Node rightChild;
     Random randomGenerator;
@@ -15,18 +15,18 @@ public class Rule implements Node {
     int pointThresh;
 
 
-    public Rule(PokerSquaresPointSystem ps) {
+    public Rule(PokerSquaresPointSystem system) {
 
-        this.pointSystem = ps;
+        this.system = system;
 
 
         // it's going to have decision nodes unless told otherwise
-        leftChild = new Decision(pointSystem);
-        rightChild = new Decision(pointSystem);
+        leftChild = new Decision(system);
+        rightChild = new Decision(system);
 
-        FLUSH_SCORE = pointSystem.getHandScore(PokerHand.FLUSH);
-        STRAIGHT_SCORE = pointSystem.getHandScore(PokerHand.STRAIGHT);
-        int[] scores = pointSystem.getScoreTable();
+        FLUSH_SCORE = system.getHandScore(PokerHand.FLUSH);
+        STRAIGHT_SCORE = system.getHandScore(PokerHand.STRAIGHT);
+        int[] scores = system.getScoreTable();
         Arrays.sort(scores);
         // threshold is the median score
         pointThresh = scores[scores.length/2];
@@ -139,7 +139,7 @@ public class Rule implements Node {
         Card[] potentialHand = grid[rowChoice].clone();
         int handLength = preferenceList[temprc][0];
         potentialHand[handLength] = curCard;
-        int handScore = pointSystem.getHandScore(potentialHand);
+        int handScore = system.getHandScore(potentialHand);
         int suitScore = suitCheck(potentialHand);
         int seqScore = seqCheck(potentialHand);
         if (suitScore > handScore) handScore = suitScore;
@@ -173,7 +173,7 @@ public class Rule implements Node {
             potentialHand[i] = grid[columnChoice][i];
         }
         potentialHand[handLength] = curCard;
-        int handScore = pointSystem.getHandScore(potentialHand);
+        int handScore = system.getHandScore(potentialHand);
         int suitScore = suitCheck(potentialHand);
         int seqScore = seqCheck(potentialHand);
         if (suitScore > handScore) handScore = suitScore;
@@ -268,11 +268,27 @@ public class Rule implements Node {
     }
 
     /**
-     * Change the parameters within the node
-     * sometimes change the children
+     * Changes, with a random probability, this rule into
+     * a decision, or changes it into a rule and gives it two
+     * decision nodes below it. Returns the new Node.
+     * @param boolean: True for Decision, False for Rule
      */
     public Node mutate(boolean type) {
-        return new Rule(pointSystem);
+        if (type) {
+            // if true, returns a new mutated decision node.
+            Decision newDecision = new Decision(system);
+            return newDecision;
+        } else {
+            // if false, creates a rule and associated decisions
+            // and returns the Rule.
+            Rule newRule = new Rule(system);
+            Decision newLeft = new Decision(system);
+            Decision newRight = new Decision(system);
+            newRule.setLeft(newLeft);
+            newRule.setRight(newRight);
+            return newRule;
+        }
+
     }
 
 
