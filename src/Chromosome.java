@@ -63,6 +63,28 @@ public class Chromosome implements PokerSquaresPlayer {
 
     }
 
+    private int getDepthUtil(Node node, String id, int depth) {
+        if (node == null) {
+            return 0;
+        }
+
+        if (node.getID().equals(id)) {
+            return depth;
+        }
+
+        int downlevel = getDepthUtil(node.getChild(false), id, depth + 1);
+        if (downlevel != 0) {
+            return downlevel;
+        }
+
+        downlevel = getDepthUtil(node.getChild(true), id, depth + 1);
+        return downlevel;
+    }
+
+    public int getDepth(Node node, String id) {
+        return getDepthUtil(node, id, 1);
+    }
+
 
     public static String createID() {
         return String.valueOf(idGenerator.getAndIncrement());
