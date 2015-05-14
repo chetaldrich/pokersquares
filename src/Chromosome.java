@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class FitnessGeneticPlayer implements PokerSquaresPlayer {
+public class Chromosome implements PokerSquaresPlayer {
 
     private final int SIZE = 5; // grid dimension
     private Card[][] grid = new Card[SIZE][SIZE]; // Card grid
@@ -10,8 +10,7 @@ public class FitnessGeneticPlayer implements PokerSquaresPlayer {
 
 
 
-    public FitnessGeneticPlayer() {
-    }
+    public Chromosome() {}
 
 
     @Override
@@ -29,10 +28,12 @@ public class FitnessGeneticPlayer implements PokerSquaresPlayer {
         // reset number of plays
         numPlays = 0;
     }
+    
 
     public void setHead(Node head) {
         headNode = head;
     }
+
 
     public Node getHead() {
         return headNode;
@@ -41,11 +42,6 @@ public class FitnessGeneticPlayer implements PokerSquaresPlayer {
 
     private void addToGrid(Card card, int[] playPosition) {
         grid[playPosition[0]][playPosition[1]] = card;
-    }
-
-
-    public Card[][] getGrid() {
-        return grid;
     }
 
 
@@ -59,11 +55,8 @@ public class FitnessGeneticPlayer implements PokerSquaresPlayer {
 
     @Override
     public String getName() {
-        return "FitnessGeneticPlayer";
+        return "Chromosome";
     }
 
-
-    public static void main(String[] args) {
-    }
 
 }

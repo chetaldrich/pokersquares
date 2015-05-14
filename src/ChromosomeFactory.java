@@ -4,14 +4,14 @@ public class ChromosomeFactory {
 
     private final int LENGTH = 100;
     private final int NON_SURVIVORS = 10;
-    private ArrayList<Node> ruleList;
+    private ArrayList<Chromosome> genePool;
     private PokerSquaresPointSystem system;
     private static Random randomGenerator;
 
 
 
     public ChromosomeFactory(PokerSquaresPointSystem system) {
-        ruleList = new ArrayList<Node>(LENGTH);
+        genePool = new ArrayList<Chromosome>(LENGTH);
         this.system = system;
     }
 
@@ -22,7 +22,13 @@ public class ChromosomeFactory {
      */
     public void createChromosomes() {
         for (int i = 0; i < LENGTH; i++) {
-            ruleList.add(new Rule(system));
+            Chromosome newChromosome = new Chromosome();
+            newChromosome.setPointSystem(system, 0);
+
+            Node gene = new Rule(system);
+            newChromosome.setHead(gene);
+
+            genePool.add(newChromosome);
         }
     }
 
@@ -47,10 +53,11 @@ public class ChromosomeFactory {
     private int[][] assessFitness() {
         int[][] fitnesses = new int[LENGTH][2];
         for (int i = 0; i < LENGTH; i++) {
-            FitnessGeneticPlayer fgp = new FitnessGeneticPlayer();
-            fgp.setPointSystem(system,0);
-            fgp.setHead(ruleList.get(i));
-            PokerSquares evaluator = new PokerSquares(fgp, system);
+            // Chromosome chromosome = new Chromosome();
+            // chromosome.setPointSystem(system,0);
+            // chromosome.setHead(genePool.get(i));
+            Chromosome chromosome = genePool.get(i);
+            PokerSquares evaluator = new PokerSquares(chromosome, system);
             int[] scores = evaluator.playSequence(50,0,false);
             fitnesses[i][0] = average(scores);
             fitnesses[i][1] = i;
@@ -62,7 +69,7 @@ public class ChromosomeFactory {
     /**
      * Determines which chromosomes move to the next generation.
      */
-    public Node selectNextGeneration() {
+    public Chromosome selectNextGeneration() {
         int[][] fitnesses = assessFitness();
         Arrays.sort(fitnesses, new Comparator<int[]>() {
             public int compare(int[] a, int[] b) {
@@ -73,8 +80,15 @@ public class ChromosomeFactory {
         for (int i = 0; i < NON_SURVIVORS; i++) {
             int winnerInd = fitnesses[i][1];
             int replaceInd = fitnesses[LENGTH - (i + 1)][1];
-            Node replacement = cloneTree(ruleList.get(winnerInd));
-            ruleList.set(replaceInd,replacement);
+
+            Node replacement =
+            cloneTree(genePool.get(winnerInd).getHead());
+
+            Chromosome clone = new Chromosome();
+            clone.setPointSystem(system, 0);
+            clone.setHead(replacement);
+
+            genePool.set(replaceInd, clone);
         }
 
         for (int i = 0; i < LENGTH; i++) {
@@ -84,7 +98,7 @@ public class ChromosomeFactory {
             System.out.println();
         }
 
-        Node winner = ruleList.get(fitnesses[0][1]);
+        Chromosome winner = genePool.get(fitnesses[0][1]);
         return winner;
 
     }
@@ -119,7 +133,7 @@ public class ChromosomeFactory {
         for (int i = 0; i < LENGTH; i++) {
             float mutation = randomGenerator.nextFloat();
             if (mutation <= .07) {
-                mutateChromosome(ruleList.get(i));
+                mutateChromosome(genePool.get(i));
             }
         }
     }
@@ -127,9 +141,8 @@ public class ChromosomeFactory {
 
     /**
      * Mutates individual nodes in chromosomes.
-     *
      */
-    private void mutateChromosome(Node root) {
+    private void mutateChromosome(Chromosome chromosome) {
 
     }
 
