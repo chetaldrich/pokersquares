@@ -291,6 +291,9 @@ public class Rule implements Node {
 
     }
 
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
 
 }

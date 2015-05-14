@@ -1,5 +1,5 @@
 
-public interface Node {
+public interface Node extends Cloneable {
 
 	/**
      * Sets the right child to be a rule
@@ -41,5 +41,7 @@ public interface Node {
      * @param type of Node (True = Decision, False = Rule)
      */
     public Node mutate(boolean type);
+
+    public Object clone() throws CloneNotSupportedException;
 
 }
