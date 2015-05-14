@@ -1,24 +1,25 @@
 
 public interface Node {
 
+
+    /**
+     * @return A String that represents the function or value of this node.
+     */
+    public String getLabel();
+
+
 	/**
      * Sets the right child to be a rule
-     *
+     * @param Node to set reference to.
      */
     public void setRight(Node right);
 
 
     /**
      * Sets the left child to be a rule
-     *
+     * @param Node to set reference to.
      */
     public void setLeft(Node left);
-
-
-    /**
-     * @return A String that represents the function or value of this node.
-     */
-    public String getLabel();
 
 
     /**
@@ -27,6 +28,7 @@ public interface Node {
      */
     public int[] evaluate(Card[][] grid, Card curCard);
 
+
     /**
      * Retrieves a direct sub-rule from this rule.
      * @param decisions The boolean index of a child rule.
@@ -34,6 +36,7 @@ public interface Node {
      * @return The node at the specified position.
      */
     public Node getChild(boolean direction);
+
 
     /**
      * Change the parameters within the node

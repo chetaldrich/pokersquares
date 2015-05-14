@@ -320,17 +320,16 @@ public class Decision implements Node {
 
 
     /**
-     * Sets the right child
-     *
+     * {@inheritDoc}
      */
     public void setRight(Node right) {}
 
 
     /**
-     * Sets the left child
-     *
+     * {@inheritDoc}
      */
     public void setLeft(Node left) {}
+
 
     /**
      * Retrieves a direct sub-rule from this rule.

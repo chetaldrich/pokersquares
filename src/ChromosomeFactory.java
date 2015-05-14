@@ -1,13 +1,16 @@
 import java.util.*;
 
 public class ChromosomeFactory {
+    
     private final int LENGTH = 100;
     private ArrayList<Rule> ruleList;
-    PokerSquaresPointSystem pointSystem;
+    private PokerSquaresPointSystem system;
+    private static Random randomGenerator;
 
-    public ChromosomeFactory(PokerSquaresPointSystem psps) {
+
+    public ChromosomeFactory(PokerSquaresPointSystem system) {
         ruleList = new ArrayList<Rule>(LENGTH);
-        pointSystem = psps;
+        this.system = system;
     }
 
 
@@ -22,11 +25,11 @@ public class ChromosomeFactory {
 
     private int average(int[] scores) {
         int total = 0;
-        for (int i=0; i<scores.length; i++) {
+        for (int i = 0; i < scores.length; i++) {
             total += scores[i];
         }
-        double aveDouble = (double)total/scores.length;
-        int aveInt = (int)Math.round(aveDouble);
+        double aveDouble = (double) total / scores.length;
+        int aveInt = (int) Math.round(aveDouble);
         return aveInt;
     }
 
@@ -37,12 +40,12 @@ public class ChromosomeFactory {
      */
     private int[][] assessFitness() {
         int[][] fitnesses = new int[LENGTH][2];
-        for (int i=0; i<LENGTH; i++) {
+        for (int i = 0; i < LENGTH; i++) {
             FitnessGeneticPlayer fgp = new FitnessGeneticPlayer();
-            fgp.setPointSystem(pointSystem,0);
+            fgp.setPointSystem(system,0);
             fgp.setHead(ruleList.get(i));
-            PokerSquares evaluator = new PokerSquares(fgp, pointSystem);
-            int[] scores = evaluator.playSequence(100,0,false);
+            PokerSquares evaluator = new PokerSquares(fgp, system);
+            int[] scores = evaluator.playSequence(100, 0, false);
             fitnesses[i][0] = average(scores);
             fitnesses[i][1] = i;
         }
@@ -68,7 +71,12 @@ public class ChromosomeFactory {
      *
      */
     public void mutateAll() {
-
+        for (int i = 0; i < LENGTH; i++) {
+            float mutation = randomGenerator.nextFloat();
+            if (mutation <= .07) {
+                mutateChromosome(ruleList.get(i));
+            }
+        }
     }
 
 
@@ -76,7 +84,7 @@ public class ChromosomeFactory {
      * Mutates individual nodes in chromosomes.
      *
      */
-    private void mutateChromosome() {
+    private void mutateChromosome(Rule rootRule) {
 
     }
 

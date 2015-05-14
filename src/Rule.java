@@ -9,10 +9,10 @@ public class Rule implements Node {
     private final PokerSquaresPointSystem system;
     private Node leftChild;
     private Node rightChild;
-    Random randomGenerator;
-    boolean row;
-    int rc;
-    int pointThresh;
+    private Random randomGenerator;
+    private boolean row;
+    private int rc;
+    private int pointThresh;
 
 
     public Rule(PokerSquaresPointSystem system) {
@@ -266,6 +266,7 @@ public class Rule implements Node {
     public Node getChild(boolean direction) {
         return direction ? rightChild : leftChild;
     }
+
 
     /**
      * Changes, with a random probability, this rule into
