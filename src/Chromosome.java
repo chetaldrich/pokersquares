@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Chromosome implements PokerSquaresPlayer {
 
@@ -7,10 +8,13 @@ public class Chromosome implements PokerSquaresPlayer {
     private int numPlays = 0; // number of Cards played into the grid so far
     private PokerSquaresPointSystem system; // point system
     private Node headNode;
+    private ArrayList<String> identifiers;
+    private static AtomicInteger idGenerator = new AtomicInteger();
 
 
-
-    public Chromosome() {}
+    public Chromosome() {
+        this.identifiers = new ArrayList<String>();
+    }
 
 
     @Override
@@ -28,15 +32,45 @@ public class Chromosome implements PokerSquaresPlayer {
         // reset number of plays
         numPlays = 0;
     }
-    
+
+    public void createChromosome() {
+        String id1 = this.createID();
+        String id2 = this.createID();
+        String id3 = this.createID();
+        Node gene = new Rule(system, id1);
+        Node left = new Decision(system, id2);
+        Node right = new Decision(system, id3);
+        this.addID(gene);
+        this.addID(left);
+        this.addID(right);
+        gene.setLeft(left);
+        gene.setRight(right);
+        this.setHead(gene);
+    }
 
     public void setHead(Node head) {
+        addID(head);
         headNode = head;
     }
 
 
     public Node getHead() {
         return headNode;
+    }
+
+
+    public void mutate() {
+
+    }
+
+
+    public static String createID() {
+        return String.valueOf(idGenerator.getAndIncrement());
+    }
+
+
+    public void addID(Node node) {
+        this.identifiers.add(node.getID());
     }
 
 

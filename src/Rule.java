@@ -13,16 +13,12 @@ public class Rule implements Node {
     private boolean row;
     private int rc;
     private int pointThresh;
+    private String id;
 
 
-    public Rule(PokerSquaresPointSystem system) {
-
+    public Rule(PokerSquaresPointSystem system, String id) {
+        this.id = id;
         this.system = system;
-
-
-        // it's going to have decision nodes unless told otherwise
-        leftChild = new Decision(system);
-        rightChild = new Decision(system);
 
         FLUSH_SCORE = system.getHandScore(PokerHand.FLUSH);
         STRAIGHT_SCORE = system.getHandScore(PokerHand.STRAIGHT);
@@ -43,19 +39,25 @@ public class Rule implements Node {
 
 
     /**
-     * Sets the right child
-     *
+     * {@inheritDoc}
      */
     public void setRight(Node right) {
         rightChild = right;
     }
 
+
     /**
-     * Sets the left child to be a rule
-     *
+     * {@inheritDoc}
      */
     public void setLeft(Node left) {
         leftChild = left;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getID() {
+        return id;
     }
 
 
@@ -267,31 +269,9 @@ public class Rule implements Node {
         return direction ? rightChild : leftChild;
     }
 
-
     /**
-     * Changes, with a random probability, this rule into
-     * a decision, or changes it into a rule and gives it two
-     * decision nodes below it. Returns the new Node.
-     * @param boolean: True for Decision, False for Rule
+     * {@inheritDoc}
      */
-    public Node mutate(boolean type) {
-        if (type) {
-            // if true, returns a new mutated decision node.
-            Decision newDecision = new Decision(system);
-            return newDecision;
-        } else {
-            // if false, creates a rule and associated decisions
-            // and returns the Rule.
-            Rule newRule = new Rule(system);
-            Decision newLeft = new Decision(system);
-            Decision newRight = new Decision(system);
-            newRule.setLeft(newLeft);
-            newRule.setRight(newRight);
-            return newRule;
-        }
-
-    }
-
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }

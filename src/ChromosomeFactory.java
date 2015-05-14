@@ -24,13 +24,11 @@ public class ChromosomeFactory {
         for (int i = 0; i < LENGTH; i++) {
             Chromosome newChromosome = new Chromosome();
             newChromosome.setPointSystem(system, 0);
-
-            Node gene = new Rule(system);
-            newChromosome.setHead(gene);
-
+            newChromosome.createChromosome();
             genePool.add(newChromosome);
         }
     }
+
 
     /**
      * Averages an array of integers
@@ -81,11 +79,12 @@ public class ChromosomeFactory {
             int winnerInd = fitnesses[i][1];
             int replaceInd = fitnesses[LENGTH - (i + 1)][1];
 
-            Node replacement =
-            cloneTree(genePool.get(winnerInd).getHead());
-
             Chromosome clone = new Chromosome();
             clone.setPointSystem(system, 0);
+
+            Node replacement =
+            cloneTree(clone, genePool.get(winnerInd).getHead());
+
             clone.setHead(replacement);
 
             genePool.set(replaceInd, clone);
@@ -106,20 +105,23 @@ public class ChromosomeFactory {
     /**
      * Creates a clone of the the tree starting from the head node
      */
-    private Node cloneTree(Node head) {
-        Node newHead = new Decision(system);
+    public Node cloneTree(Chromosome chromosome, Node head) {
+        Node newHead = new Decision(system, "default");
         try {
             newHead = (Node) head.clone();
+            chromosome.addID(newHead);
         } catch (CloneNotSupportedException e) {
             System.out.println("You cloned poorly");
         }
         if (newHead.getChild(true) != null) {
-            Node newRight = cloneTree(newHead.getChild(true));
+            Node newRight = cloneTree(chromosome, newHead.getChild(true));
+            chromosome.addID(newRight);
             newHead.setRight(newRight);
         }
         if (newHead.getChild(false) != null) {
-            Node newleft = cloneTree(newHead.getChild(false));
-            newHead.setLeft(newleft);
+            Node newLeft = cloneTree(chromosome, newHead.getChild(false));
+            chromosome.addID(newLeft);
+            newHead.setLeft(newLeft);
         }
         return newHead;
     }
@@ -132,18 +134,10 @@ public class ChromosomeFactory {
     public void mutateAll() {
         for (int i = 0; i < LENGTH; i++) {
             float mutation = randomGenerator.nextFloat();
-            if (mutation <= .07) {
-                mutateChromosome(genePool.get(i));
+            if (mutation <= .05) {
+                genePool.get(i).mutate();
             }
         }
-    }
-
-
-    /**
-     * Mutates individual nodes in chromosomes.
-     */
-    private void mutateChromosome(Chromosome chromosome) {
-
     }
 
 
@@ -170,7 +164,7 @@ public class ChromosomeFactory {
 
         ChromosomeFactory chrome = new ChromosomeFactory(system);
         chrome.createChromosomes();
-        for (int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             chrome.selectNextGeneration();
         }
 

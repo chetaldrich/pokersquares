@@ -1,11 +1,16 @@
 
 public interface Node extends Cloneable {
 
-
     /**
      * @return A String that represents the function or value of this node.
      */
     public String getLabel();
+
+
+    /**
+     * @return A unique String identifier for this node.
+     */
+    public String getID();
 
 
 	/**
@@ -39,12 +44,8 @@ public interface Node extends Cloneable {
 
 
     /**
-     * Change the parameters within the node
-     * sometimes change the children
-     * @param type of Node (True = Decision, False = Rule)
+     * Adds clonability to Node objects.
      */
-    public Node mutate(boolean type);
-
     public Object clone() throws CloneNotSupportedException;
 
 }

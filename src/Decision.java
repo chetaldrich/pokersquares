@@ -20,23 +20,23 @@ public class Decision implements Node {
      * Stores which function to use for decision.
      */
     private final String decisionType;
-    private Random randomGenerator;
+    private final Random randomGenerator = new Random();
     private final PokerSquaresPointSystem system;
+    private final String id;
 
 
-
-    public Decision(PokerSquaresPointSystem system) {
+    public Decision(PokerSquaresPointSystem system, String id) {
+        this.rc = randomGenerator.nextBoolean();
         this.decisionType = decideLabel();
-        this.rc = rc;
         this.system = system;
+        this.id = id;
     }
+
 
     /**
      * @return A String that determines the type of this decision.
      */
     private String decideLabel() {
-        randomGenerator = new Random();
-        rc = randomGenerator.nextBoolean();
 
         int method = randomGenerator.nextInt(8) + 1;
         String label;
@@ -65,8 +65,9 @@ public class Decision implements Node {
         return label;
     }
 
+
     /**
-     * @return A String that represents the function or value of this node.
+     * {@inheritDoc}
      */
     public String getLabel() {
         return rc ? decisionType + ":r" : decisionType + ":c";
@@ -74,10 +75,18 @@ public class Decision implements Node {
 
 
     /**
+     * {@inheritDoc}
+     */
+    public String getID() {
+        return id;
+    }
+
+
+    /**
      * Counts the cards in the row/column that fit a certain criterion
      * @return A list of counts sorted by the criterion in rows/columns.
      */
-     private int[][] countCards(Card[][] grid, Predicate<Card> filter) {
+    private int[][] countCards(Card[][] grid, Predicate<Card> filter) {
 
         int[][] counts = new int[5][2];
         // make the second entry in each count the row/col number
@@ -122,6 +131,7 @@ public class Decision implements Node {
         return counts;
     }
 
+
     /**
      * Determines a position to place a card given
      * a sorted preference list of rows/cols.
@@ -157,6 +167,7 @@ public class Decision implements Node {
         return placeRandom(grid, drawnCard);
     }
 
+
     /**
      * Determines the row/column with the
      * least amount of cards, and gives a free position in that row/column.
@@ -168,6 +179,7 @@ public class Decision implements Node {
         return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
 
+
     /**
      * Determines the row/column with the
      * most cards, and gives a free position in that row/column.
@@ -178,6 +190,7 @@ public class Decision implements Node {
         int[][] preferenceList = countCards(grid, isCard);
         return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
+
 
     /**
      * Determines the row/column with the
@@ -196,6 +209,7 @@ public class Decision implements Node {
         return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
 
+
     /**
      * Determines the row/column with the
      * most of a rank that is common with the drawn card,
@@ -213,6 +227,7 @@ public class Decision implements Node {
         return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
 
+
     /**
      * Determines the row/column where the card chosen builds the
      * most expedient straight, and gives a free position
@@ -225,6 +240,7 @@ public class Decision implements Node {
         return position;
     }
 
+
     /**
      * Determines the furthest left position that the card can be placed,
      * and then chooses from ties randomly.
@@ -235,6 +251,7 @@ public class Decision implements Node {
         return placeCard(grid, preferenceList, drawnCard, false);
     }
 
+
     /**
      * Determines the furthest position towards the top
      * that the card can be placed, and then chooses from ties randomly.
@@ -244,6 +261,7 @@ public class Decision implements Node {
         int[][] preferenceList = {{5, 0}, {4, 1}, {3, 2}, {2, 3}, {1, 4}};
         return placeCard(grid, preferenceList, drawnCard, true);
     }
+
 
     /**
      * Determines a random free position to place the card.
@@ -295,29 +313,6 @@ public class Decision implements Node {
         }
     }
 
-    /**
-     * Changes, with a random probability, this decision into
-     * another type, or changes it into a rule and gives it two
-     * decision nodes below it. Returns the new Node.
-     * @param boolean: True for Decision, False for Rule
-     */
-    public Node mutate(boolean type) {
-        if (type) {
-            // if true, returns a new mutated decision node.
-            Decision newDecision = new Decision(system);
-            return newDecision;
-        } else {
-            // if false, creates a rule and associated decisions
-            // and returns the Rule.
-            Rule newRule = new Rule(system);
-            Decision newLeft = new Decision(system);
-            Decision newRight = new Decision(system);
-            newRule.setLeft(newLeft);
-            newRule.setRight(newRight);
-            return newRule;
-        }
-    }
-
 
     /**
      * {@inheritDoc}
@@ -341,6 +336,10 @@ public class Decision implements Node {
         return null;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
