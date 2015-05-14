@@ -1,15 +1,17 @@
 import java.util.*;
 
 public class ChromosomeFactory {
-    
+
     private final int LENGTH = 100;
-    private ArrayList<Rule> ruleList;
+    private final int NON_SURVIVORS = 10;
+    private ArrayList<Node> ruleList;
     private PokerSquaresPointSystem system;
     private static Random randomGenerator;
 
 
+
     public ChromosomeFactory(PokerSquaresPointSystem system) {
-        ruleList = new ArrayList<Rule>(LENGTH);
+        ruleList = new ArrayList<Node>(LENGTH);
         this.system = system;
     }
 
@@ -19,10 +21,14 @@ public class ChromosomeFactory {
      *
      */
     public void createChromosomes() {
-
+        for (int i = 0; i < LENGTH; i++) {
+            ruleList.add(new Rule(system));
+        }
     }
 
-
+    /**
+     * Averages an array of integers
+     */
     private int average(int[] scores) {
         int total = 0;
         for (int i = 0; i < scores.length; i++) {
@@ -45,7 +51,7 @@ public class ChromosomeFactory {
             fgp.setPointSystem(system,0);
             fgp.setHead(ruleList.get(i));
             PokerSquares evaluator = new PokerSquares(fgp, system);
-            int[] scores = evaluator.playSequence(100, 0, false);
+            int[] scores = evaluator.playSequence(50,0,false);
             fitnesses[i][0] = average(scores);
             fitnesses[i][1] = i;
         }
@@ -56,13 +62,52 @@ public class ChromosomeFactory {
     /**
      * Determines which chromosomes move to the next generation.
      */
-    public void selectNextGeneration() {
+    public Node selectNextGeneration() {
         int[][] fitnesses = assessFitness();
         Arrays.sort(fitnesses, new Comparator<int[]>() {
             public int compare(int[] a, int[] b) {
-                return Integer.compare(a[0], b[0]);
+                return Integer.compare(b[0], a[0]);
             }
         });
+
+        for (int i = 0; i < NON_SURVIVORS; i++) {
+            int winnerInd = fitnesses[i][1];
+            int replaceInd = fitnesses[LENGTH - (i + 1)][1];
+            Node replacement = cloneTree(ruleList.get(winnerInd));
+            ruleList.set(replaceInd,replacement);
+        }
+
+        for (int i = 0; i < LENGTH; i++) {
+            for (int j = 0; j < 2; j++) {
+                System.out.print(fitnesses[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        Node winner = ruleList.get(fitnesses[0][1]);
+        return winner;
+
+    }
+
+    /**
+     * Creates a clone of the the tree starting from the head node
+     */
+    private Node cloneTree(Node head) {
+        Node newHead = new Decision(system);
+        try {
+            newHead = (Node) head.clone();
+        } catch (CloneNotSupportedException e) {
+            System.out.println("You cloned poorly");
+        }
+        if (newHead.getChild(true) != null) {
+            Node newRight = cloneTree(newHead.getChild(true));
+            newHead.setRight(newRight);
+        }
+        if (newHead.getChild(false) != null) {
+            Node newleft = cloneTree(newHead.getChild(false));
+            newHead.setLeft(newleft);
+        }
+        return newHead;
     }
 
 
@@ -84,7 +129,7 @@ public class ChromosomeFactory {
      * Mutates individual nodes in chromosomes.
      *
      */
-    private void mutateChromosome(Rule rootRule) {
+    private void mutateChromosome(Node root) {
 
     }
 
@@ -102,6 +147,19 @@ public class ChromosomeFactory {
      *
      */
     private void breedChromosome() {
+
+    }
+
+
+    public static void main(String[] args) {
+        PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmericanPointSystem();
+        System.out.println(system);
+
+        ChromosomeFactory chrome = new ChromosomeFactory(system);
+        chrome.createChromosomes();
+        for (int i=0; i<10; i++) {
+            chrome.selectNextGeneration();
+        }
 
     }
 

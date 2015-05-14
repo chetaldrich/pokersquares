@@ -340,4 +340,8 @@ public class Decision implements Node {
     public Node getChild(boolean direction) {
         return null;
     }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }
