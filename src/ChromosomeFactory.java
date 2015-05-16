@@ -139,14 +139,17 @@ public class ChromosomeFactory {
      *
      */
     public void crossOver() {
-
+        Collections.shuffle(genePool);
+        for (int i = 0; i < LENGTH; i+=2) {
+            breedChromosome(genePool.get(i), genePool.get(i+1));
+        }
     }
 
     /**
      * Perform crossover between two individuals.
      *
      */
-    private void breedChromosome() {
+    private void breedChromosome(Chromosome c1, Chromosome c2) {
 
     }
 
