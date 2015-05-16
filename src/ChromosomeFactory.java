@@ -55,7 +55,7 @@ public class ChromosomeFactory {
             // chromosome.setPointSystem(system,0);
             // chromosome.setHead(genePool.get(i));
             Chromosome chromosome = genePool.get(i);
-            PokerSquares evaluator = new PokerSquares(chromosome, system);
+            FakePokerSquares evaluator = new FakePokerSquares(chromosome, system);
             int[] scores = evaluator.playSequence(50,0,false);
             fitnesses[i][0] = average(scores);
             fitnesses[i][1] = i;
@@ -88,13 +88,6 @@ public class ChromosomeFactory {
             clone.setHead(replacement);
 
             genePool.set(replaceInd, clone);
-        }
-
-        for (int i = 0; i < LENGTH; i++) {
-            for (int j = 0; j < 2; j++) {
-                System.out.print(fitnesses[i][j] + " ");
-            }
-            System.out.println();
         }
 
         Chromosome winner = genePool.get(fitnesses[0][1]);
@@ -154,19 +147,6 @@ public class ChromosomeFactory {
      *
      */
     private void breedChromosome() {
-
-    }
-
-
-    public static void main(String[] args) {
-        PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmericanPointSystem();
-        System.out.println(system);
-
-        ChromosomeFactory chrome = new ChromosomeFactory(system);
-        chrome.createChromosomes();
-        for (int i = 0; i < 10; i++) {
-            chrome.selectNextGeneration();
-        }
 
     }
 
