@@ -23,6 +23,7 @@ public class Decision implements Node {
     private final Random randomGenerator = new Random();
     private final PokerSquaresPointSystem system;
     private final String id;
+    private Node parent;
 
 
     public Decision(PokerSquaresPointSystem system, String id) {
@@ -324,6 +325,22 @@ public class Decision implements Node {
      * {@inheritDoc}
      */
     public void setLeft(Node left) {}
+
+
+    /**
+     * {@inheritDoc}
+     */
+     public Node getParent() {
+         return this.parent;
+     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+     public void setParent(Node parent) {
+         this.parent = parent;
+     }
 
 
     /**

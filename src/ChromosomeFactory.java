@@ -6,7 +6,7 @@ public class ChromosomeFactory {
     private final int NON_SURVIVORS = 10;
     private ArrayList<Chromosome> genePool;
     private PokerSquaresPointSystem system;
-    private static Random randomGenerator;
+    private Random randomGenerator = new Random();
 
 
 
@@ -51,9 +51,6 @@ public class ChromosomeFactory {
     private int[][] assessFitness() {
         int[][] fitnesses = new int[LENGTH][2];
         for (int i = 0; i < LENGTH; i++) {
-            // Chromosome chromosome = new Chromosome();
-            // chromosome.setPointSystem(system,0);
-            // chromosome.setHead(genePool.get(i));
             Chromosome chromosome = genePool.get(i);
             PokerSquares evaluator = new PokerSquares(chromosome, system);
             int[] scores = evaluator.playSequence(50,0,false);
@@ -132,9 +129,10 @@ public class ChromosomeFactory {
      *
      */
     public void mutateAll() {
+        float mutation;
         for (int i = 0; i < LENGTH; i++) {
-            float mutation = randomGenerator.nextFloat();
-            if (mutation <= .05) {
+            mutation = randomGenerator.nextFloat();
+            if (mutation <= .3) {
                 genePool.get(i).mutate();
             }
         }
@@ -166,6 +164,7 @@ public class ChromosomeFactory {
         chrome.createChromosomes();
         for (int i = 0; i < 10; i++) {
             chrome.selectNextGeneration();
+            chrome.mutateAll();
         }
 
     }

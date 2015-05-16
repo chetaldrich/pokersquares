@@ -13,7 +13,7 @@ public interface Node extends Cloneable {
     public String getID();
 
 
-	/**
+    /**
      * Sets the right child to be a rule
      * @param Node to set reference to.
      */
@@ -41,6 +41,18 @@ public interface Node extends Cloneable {
      * @return The node at the specified position.
      */
     public Node getChild(boolean direction);
+
+
+    /**
+     * Gets the parent node for this node.
+     */
+    public Node getParent();
+
+
+    /**
+     * Sets the parent node for this node.
+     */
+    public void setParent(Node parent);
 
 
     /**

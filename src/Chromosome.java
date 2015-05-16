@@ -1,15 +1,18 @@
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.lang.NullPointerException;
 
 public class Chromosome implements PokerSquaresPlayer {
 
     private final int SIZE = 5; // grid dimension
+    private final int DEPTH_LIMIT = 6;
     private Card[][] grid = new Card[SIZE][SIZE]; // Card grid
     private int numPlays = 0; // number of Cards played into the grid so far
     private PokerSquaresPointSystem system; // point system
     private Node headNode;
     private ArrayList<String> identifiers;
     private static AtomicInteger idGenerator = new AtomicInteger();
+    private static final Random randomGenerator = new Random();
 
 
     public Chromosome() {
@@ -60,7 +63,91 @@ public class Chromosome implements PokerSquaresPlayer {
 
 
     public void mutate() {
+        int index = randomGenerator.nextInt(this.identifiers.size());
+        String selectedID = this.identifiers.get(index);
+        Node node = findNode(this.getHead(), selectedID);
+        String id;
+        String id2;
+        String id3;
+        if (node instanceof Rule) {
+            id = this.createID();
+            if (node.getParent() == null) {
+                Node mutation = new Rule(system, id);
+                this.addID(mutation);
+                mutation.setLeft(node.getChild(true));
+                mutation.setRight(node.getChild(false));
+                this.removeID(node);
+                node = null;
+            } else {
+                Node mutation = new Rule(system, id);
+                this.addID(mutation);
+                mutation.setLeft(node.getChild(true));
+                mutation.setRight(node.getChild(false));
+                mutation.setParent(node.getParent());
+                this.removeID(node);
+                node = null;
+            }
+        } else if (node instanceof Decision) {
+            id = this.createID();
+            float value = randomGenerator.nextFloat();
+            if (value >= .3) {
+                // randomly chose to make a rule.
+                if (getDepth(node, node.getID()) == DEPTH_LIMIT) {
+                    // if at the depth limit, don't increase depth
+                    // make a decision instead
+                    Node mutation = new Decision(system, id);
+                    this.addID(mutation);
+                    mutation.setParent(node.getParent());
+                    this.removeID(node);
+                    node = null;
+                } else {
+                    // else, create the rule, increase depth.
+                    id2 = this.createID();
+                    id3 = this.createID();
+                    Node mutation = new Rule(system, id);
+                    Node mutationLeft = new Decision(system, id2);
+                    Node mutationRight = new Decision(system, id3);
+                    this.addID(mutationLeft);
+                    this.addID(mutationRight);
+                    this.addID(mutation);
+                    mutation.setParent(node.getParent());
+                    mutation.setLeft(mutationLeft);
+                    mutation.setRight(mutationRight);
+                    this.removeID(node);
+                    node = null;
+                }
+            } else {
+                // randomly chose to make a decision
+                id = this.createID();
+                Node mutation = new Decision(system, id);
+                this.addID(mutation);
+                mutation.setParent(node.getParent());
+                this.removeID(node);
+                node = null;
+            }
 
+        }
+
+    }
+
+
+    private Node findNode(Node node, String id) {
+        Deque<Node> a = new ArrayDeque<Node>();
+        a.addLast(node);
+        while (!a.isEmpty()) {
+            Node t = a.removeFirst();
+            if (t.getID().equals(id)) {
+                return t;
+            }
+            if (t.getChild(true) != null) {
+                a.addLast(t.getChild(true));
+            }
+            if (t.getChild(false) != null){
+                a.addLast(t.getChild(false));
+            }
+        }
+        // hmmm.......
+        throw new NullPointerException("Node not found.");
     }
 
     private int getDepthUtil(Node node, String id, int depth) {
@@ -81,6 +168,7 @@ public class Chromosome implements PokerSquaresPlayer {
         return downlevel;
     }
 
+
     public int getDepth(Node node, String id) {
         return getDepthUtil(node, id, 1);
     }
@@ -93,6 +181,10 @@ public class Chromosome implements PokerSquaresPlayer {
 
     public void addID(Node node) {
         this.identifiers.add(node.getID());
+    }
+
+    public void removeID(Node node) {
+        this.identifiers.remove(node.getID());
     }
 
 

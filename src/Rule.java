@@ -9,6 +9,7 @@ public class Rule implements Node {
     private final PokerSquaresPointSystem system;
     private Node leftChild;
     private Node rightChild;
+    private Node parent;
     private Random randomGenerator;
     private boolean row;
     private int rc;
@@ -42,7 +43,8 @@ public class Rule implements Node {
      * {@inheritDoc}
      */
     public void setRight(Node right) {
-        rightChild = right;
+        this.rightChild = right;
+        this.rightChild.setParent(this);
     }
 
 
@@ -50,8 +52,26 @@ public class Rule implements Node {
      * {@inheritDoc}
      */
     public void setLeft(Node left) {
-        leftChild = left;
+        this.leftChild = left;
+        this.leftChild.setParent(this);
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Node getParent() {
+        return this.parent;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
 
     /**
      * {@inheritDoc}
@@ -67,7 +87,7 @@ public class Rule implements Node {
     public String getLabel() {
         String rowOrCol = row ? "row" : "column";
         String rcnum = Integer.toString(rc);
-        String label = "Check the "+rowOrCol+" ranked "+rcnum;
+        String label = "Check the " + rowOrCol + " ranked " + rcnum;
         return label;
     }
 
@@ -133,7 +153,7 @@ public class Rule implements Node {
         int temprc = rc;
         int rowChoice = preferenceList[temprc][1];
         while (preferenceList[temprc][0] >= HAND_SIZE) {
-            temprc = (temprc+1) % HAND_SIZE;
+            temprc = (temprc + 1) % HAND_SIZE;
             rowChoice = preferenceList[temprc][1];
             if (temprc == rc) break;
         }
@@ -171,7 +191,7 @@ public class Rule implements Node {
 
         Card[] potentialHand = new Card[5];
         int handLength = preferenceList[temprc][0];
-        for (int i=0; i<potentialHand.length; i++) {
+        for (int i = 0; i < potentialHand.length; i++) {
             potentialHand[i] = grid[columnChoice][i];
         }
         potentialHand[handLength] = curCard;
