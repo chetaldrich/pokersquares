@@ -105,12 +105,10 @@ public class ChromosomeFactory {
         }
         if (newHead.getChild(true) != null) {
             Node newRight = cloneTree(chromosome, newHead.getChild(true));
-            chromosome.addID(newRight);
             newHead.setRight(newRight);
         }
         if (newHead.getChild(false) != null) {
             Node newLeft = cloneTree(chromosome, newHead.getChild(false));
-            chromosome.addID(newLeft);
             newHead.setLeft(newLeft);
         }
         return newHead;

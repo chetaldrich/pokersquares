@@ -52,7 +52,6 @@ public class Chromosome implements PokerSquaresPlayer {
     }
 
     public void setHead(Node head) {
-        addID(head);
         headNode = head;
     }
 
