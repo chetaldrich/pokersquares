@@ -24,7 +24,7 @@ public class GeneticPlayer implements PokerSquaresPlayer {
         long startTime = System.currentTimeMillis();
         while((System.currentTimeMillis()-startTime) < SETUP_PROP*millis) {
             chrome.selectNextGeneration();
-            // chrome.mutateAll();
+            chrome.mutateAll();
             chrome.crossOver();
         }
         Chromosome best = chrome.selectNextGeneration();

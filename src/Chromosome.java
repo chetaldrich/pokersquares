@@ -65,7 +65,9 @@ public class Chromosome implements PokerSquaresPlayer {
     public void mutate() {
         int index = randomGenerator.nextInt(this.identifiers.size());
         String selectedID = this.identifiers.get(index);
+        System.out.println(this.identifiers);
         Node node = findNode(this.getHead(), selectedID);
+        if (node == null) return;
         String id;
         String id2;
         String id3;
@@ -136,6 +138,7 @@ public class Chromosome implements PokerSquaresPlayer {
         a.addLast(node);
         while (!a.isEmpty()) {
             Node t = a.removeFirst();
+            System.out.println("At node " + t.getID() + " looking for " + id);
             if (t.getID().equals(id)) {
                 return t;
             }
@@ -146,6 +149,7 @@ public class Chromosome implements PokerSquaresPlayer {
                 a.addLast(t.getChild(false));
             }
         }
+        // return null;
         // hmmm.......
         throw new NullPointerException("Node not found.");
     }
