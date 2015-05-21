@@ -35,12 +35,17 @@ public interface Node extends Cloneable {
 
 
     /**
-     * Retrieves a direct sub-rule from this rule.
-     * @param decisions The boolean index of a child rule.
-     * 0 (false) is left, 1 (true) is right.
-     * @return The node at the specified position.
+     * Gets this node's left child.
+     * @return Node object
      */
-    public Node getChild(boolean direction);
+    public Node getLeftChild();
+
+
+    /**
+     * Gets this node's right child.
+     * @return Node object
+     */
+    public Node getRightChild();
 
 
     /**

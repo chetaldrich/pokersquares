@@ -343,12 +343,17 @@ public class Decision implements Node {
 
 
     /**
-     * Retrieves a direct sub-rule from this rule.
-     * @param decisions The boolean index of a child rule.
-     * 0 (false) is left, 1 (true) is right.
-     * @return The node at the specified position.
+     * {@inheritDoc}
      */
-    public Node getChild(boolean direction) {
+    public Node getLeftChild() {
+        return null;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Node getRightChild() {
         return null;
     }
 

@@ -91,6 +91,7 @@ public class Rule implements Node {
         return label;
     }
 
+
     /**
      * Counts the cards in the row/column that fit a certain criterion
      * @return A list of counts sorted by the criterion in rows/columns.
@@ -138,6 +139,7 @@ public class Rule implements Node {
         return counts;
     }
 
+
     /**
      * Checks a given row number, places the card somewhere in the row,
      * and then checks what kind of hand it gives, and returns the value of
@@ -168,6 +170,7 @@ public class Rule implements Node {
         else if (seqScore > handScore) handScore = seqScore;
         return (handScore > pointThresh);
     }
+
 
     /**
      * Checks a given column number, places the card somewhere in the column,
@@ -202,6 +205,7 @@ public class Rule implements Node {
         else if (seqScore > handScore) handScore = seqScore;
         return (handScore > pointThresh);
     }
+
 
     /**
      * Checks for groups of suits in the hand, and then
@@ -265,6 +269,7 @@ public class Rule implements Node {
         }
     }
 
+
     /**
      * Evaluates the node at this level and returns one of the child nodes.
      * @return A boolean, indicating which direction to move in the tree.
@@ -279,15 +284,22 @@ public class Rule implements Node {
         : leftChild.evaluate(grid, curCard);
     }
 
+
     /**
-     * Retrieves a direct sub-rule from this rule.
-     * @param direction The boolean index of a child rule.
-     * 0 (false) is left, 1 (true) is right.
-     * @return The node at the specified position.
+     * {@inheritDoc}
      */
-    public Node getChild(boolean direction) {
-        return direction ? rightChild : leftChild;
+    public Node getLeftChild() {
+        return leftChild;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Node getRightChild() {
+        return rightChild;
+    }
+
 
     /**
      * {@inheritDoc}

@@ -103,12 +103,12 @@ public class ChromosomeFactory {
         } catch (CloneNotSupportedException e) {
             System.out.println("You cloned poorly");
         }
-        if (newHead.getChild(true) != null) {
-            Node newRight = cloneTree(chromosome, newHead.getChild(true));
+        if (newHead.getRightChild() != null) {
+            Node newRight = cloneTree(chromosome, newHead.getRightChild());
             newHead.setRight(newRight);
         }
-        if (newHead.getChild(false) != null) {
-            Node newLeft = cloneTree(chromosome, newHead.getChild(false));
+        if (newHead.getLeftChild() != null) {
+            Node newLeft = cloneTree(chromosome, newHead.getLeftChild());
             newHead.setLeft(newLeft);
         }
         return newHead;

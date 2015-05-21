@@ -69,18 +69,18 @@ public class Chromosome implements PokerSquaresPlayer {
             if (node.getParent() == null) {
                 Node mutation = new Rule(system, createID());
                 this.addID(mutation);
-                mutation.setLeft(node.getChild(false));
-                mutation.setRight(node.getChild(true));
+                mutation.setLeft(node.getLeftChild());
+                mutation.setRight(node.getRightChild());
                 this.setHead(mutation);
                 this.removeID(node);
                 node = null;
             } else {
                 Node mutation = new Rule(system, createID());
                 this.addID(mutation);
-                mutation.setLeft(node.getChild(false));
-                mutation.setRight(node.getChild(true));
+                mutation.setLeft(node.getLeftChild());
+                mutation.setRight(node.getRightChild());
                 mutation.setParent(node.getParent());
-                if (node.getParent().getChild(false).getID().equals(node.getID())) {
+                if (node.getParent().getLeftChild().getID().equals(node.getID())) {
                     node.getParent().setLeft(mutation);
                 } else {
                     node.getParent().setRight(mutation);
@@ -109,7 +109,7 @@ public class Chromosome implements PokerSquaresPlayer {
                     this.addID(mutationRight);
                     this.addID(mutation);
                     mutation.setParent(node.getParent());
-                    if (node.getParent().getChild(false).getID().equals(node.getID())) {
+                    if (node.getParent().getLeftChild().getID().equals(node.getID())) {
                         node.getParent().setLeft(mutation);
                     } else {
                         node.getParent().setRight(mutation);
@@ -124,7 +124,7 @@ public class Chromosome implements PokerSquaresPlayer {
                 Node mutation = new Decision(system, createID());
                 this.addID(mutation);
                 mutation.setParent(node.getParent());
-                if (node.getParent().getChild(false).getID().equals(node.getID())) {
+                if (node.getParent().getLeftChild().getID().equals(node.getID())) {
                     node.getParent().setLeft(mutation);
                 } else {
                     node.getParent().setRight(mutation);
@@ -146,11 +146,11 @@ public class Chromosome implements PokerSquaresPlayer {
             if (t.getID() == id) {
                 return t;
             }
-            if (t.getChild(true) != null) {
-                a.addLast(t.getChild(true));
+            if (t.getRightChild() != null) {
+                a.addLast(t.getRightChild());
             }
-            if (t.getChild(false) != null){
-                a.addLast(t.getChild(false));
+            if (t.getLeftChild() != null){
+                a.addLast(t.getLeftChild());
             }
         }
         throw new NullPointerException("Node not found.");
@@ -165,12 +165,12 @@ public class Chromosome implements PokerSquaresPlayer {
             return depth;
         }
 
-        int downlevel = getDepthUtil(node.getChild(false), id, depth + 1);
+        int downlevel = getDepthUtil(node.getLeftChild(), id, depth + 1);
         if (downlevel != 0) {
             return downlevel;
         }
 
-        downlevel = getDepthUtil(node.getChild(true), id, depth + 1);
+        downlevel = getDepthUtil(node.getRightChild(), id, depth + 1);
         return downlevel;
     }
 
