@@ -14,10 +14,10 @@ public class Rule implements Node {
     private boolean row;
     private int rc;
     private int pointThresh;
-    private String id;
+    private Integer id;
 
 
-    public Rule(PokerSquaresPointSystem system, String id) {
+    public Rule(PokerSquaresPointSystem system, Integer id) {
         this.id = id;
         this.system = system;
 
@@ -76,7 +76,7 @@ public class Rule implements Node {
     /**
      * {@inheritDoc}
      */
-    public String getID() {
+    public Integer getID() {
         return id;
     }
 
@@ -281,7 +281,7 @@ public class Rule implements Node {
 
     /**
      * Retrieves a direct sub-rule from this rule.
-     * @param decisions The boolean index of a child rule.
+     * @param direction The boolean index of a child rule.
      * 0 (false) is left, 1 (true) is right.
      * @return The node at the specified position.
      */

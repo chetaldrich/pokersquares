@@ -19,6 +19,7 @@ doc/
 
 # .idea
 .idea/
+*.iml
 
 # LaTeX output files
 *.log

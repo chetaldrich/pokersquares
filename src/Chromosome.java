@@ -10,13 +10,13 @@ public class Chromosome implements PokerSquaresPlayer {
     private int numPlays = 0; // number of Cards played into the grid so far
     private PokerSquaresPointSystem system; // point system
     private Node headNode;
-    private ArrayList<String> identifiers;
+    private ArrayList<Integer> identifiers;
     private static AtomicInteger idGenerator = new AtomicInteger();
     private static final Random randomGenerator = new Random();
 
 
     public Chromosome() {
-        this.identifiers = new ArrayList<String>();
+        this.identifiers = new ArrayList<Integer>();
     }
 
 
@@ -37,9 +37,9 @@ public class Chromosome implements PokerSquaresPlayer {
     }
 
     public void createChromosome() {
-        String id1 = this.createID();
-        String id2 = this.createID();
-        String id3 = this.createID();
+        int id1 = createID();
+        int id2 = createID();
+        int id3 = createID();
         Node gene = new Rule(system, id1);
         Node left = new Decision(system, id2);
         Node right = new Decision(system, id3);
@@ -63,55 +63,57 @@ public class Chromosome implements PokerSquaresPlayer {
 
     public void mutate() {
         int index = randomGenerator.nextInt(this.identifiers.size());
-        String selectedID = this.identifiers.get(index);
-        System.out.println(this.identifiers);
+        Integer selectedID = this.identifiers.get(index);
         Node node = findNode(this.getHead(), selectedID);
-        if (node == null) return;
-        String id;
-        String id2;
-        String id3;
         if (node instanceof Rule) {
-            id = this.createID();
             if (node.getParent() == null) {
-                Node mutation = new Rule(system, id);
+                Node mutation = new Rule(system, createID());
                 this.addID(mutation);
-                mutation.setLeft(node.getChild(true));
-                mutation.setRight(node.getChild(false));
+                mutation.setLeft(node.getChild(false));
+                mutation.setRight(node.getChild(true));
+                this.setHead(mutation);
                 this.removeID(node);
                 node = null;
             } else {
-                Node mutation = new Rule(system, id);
+                Node mutation = new Rule(system, createID());
                 this.addID(mutation);
-                mutation.setLeft(node.getChild(true));
-                mutation.setRight(node.getChild(false));
+                mutation.setLeft(node.getChild(false));
+                mutation.setRight(node.getChild(true));
                 mutation.setParent(node.getParent());
+                if (node.getParent().getChild(false).getID().equals(node.getID())) {
+                    node.getParent().setLeft(mutation);
+                } else {
+                    node.getParent().setRight(mutation);
+                }
                 this.removeID(node);
                 node = null;
             }
         } else if (node instanceof Decision) {
-            id = this.createID();
             float value = randomGenerator.nextFloat();
             if (value >= .3) {
                 // randomly chose to make a rule.
                 if (getDepth(node, node.getID()) == DEPTH_LIMIT) {
                     // if at the depth limit, don't increase depth
                     // make a decision instead
-                    Node mutation = new Decision(system, id);
+                    Node mutation = new Decision(system, createID());
                     this.addID(mutation);
                     mutation.setParent(node.getParent());
                     this.removeID(node);
                     node = null;
                 } else {
                     // else, create the rule, increase depth.
-                    id2 = this.createID();
-                    id3 = this.createID();
-                    Node mutation = new Rule(system, id);
-                    Node mutationLeft = new Decision(system, id2);
-                    Node mutationRight = new Decision(system, id3);
+                    Node mutation = new Rule(system, createID());
+                    Node mutationLeft = new Decision(system, createID());
+                    Node mutationRight = new Decision(system, createID());
                     this.addID(mutationLeft);
                     this.addID(mutationRight);
                     this.addID(mutation);
                     mutation.setParent(node.getParent());
+                    if (node.getParent().getChild(false).getID().equals(node.getID())) {
+                        node.getParent().setLeft(mutation);
+                    } else {
+                        node.getParent().setRight(mutation);
+                    }
                     mutation.setLeft(mutationLeft);
                     mutation.setRight(mutationRight);
                     this.removeID(node);
@@ -119,10 +121,14 @@ public class Chromosome implements PokerSquaresPlayer {
                 }
             } else {
                 // randomly chose to make a decision
-                id = this.createID();
-                Node mutation = new Decision(system, id);
+                Node mutation = new Decision(system, createID());
                 this.addID(mutation);
                 mutation.setParent(node.getParent());
+                if (node.getParent().getChild(false).getID().equals(node.getID())) {
+                    node.getParent().setLeft(mutation);
+                } else {
+                    node.getParent().setRight(mutation);
+                }
                 this.removeID(node);
                 node = null;
             }
@@ -132,13 +138,12 @@ public class Chromosome implements PokerSquaresPlayer {
     }
 
 
-    private Node findNode(Node node, String id) {
+    private Node findNode(Node node, Integer id) {
         Deque<Node> a = new ArrayDeque<Node>();
         a.addLast(node);
         while (!a.isEmpty()) {
             Node t = a.removeFirst();
-            System.out.println("At node " + t.getID() + " looking for " + id);
-            if (t.getID().equals(id)) {
+            if (t.getID() == id) {
                 return t;
             }
             if (t.getChild(true) != null) {
@@ -148,12 +153,10 @@ public class Chromosome implements PokerSquaresPlayer {
                 a.addLast(t.getChild(false));
             }
         }
-        // return null;
-        // hmmm.......
         throw new NullPointerException("Node not found.");
     }
 
-    private int getDepthUtil(Node node, String id, int depth) {
+    private int getDepthUtil(Node node, Integer id, int depth) {
         if (node == null) {
             return 0;
         }
@@ -172,13 +175,13 @@ public class Chromosome implements PokerSquaresPlayer {
     }
 
 
-    public int getDepth(Node node, String id) {
+    public int getDepth(Node node, int id) {
         return getDepthUtil(node, id, 1);
     }
 
 
-    public static String createID() {
-        return String.valueOf(idGenerator.getAndIncrement());
+    public static int createID() {
+        return idGenerator.getAndIncrement();
     }
 
 

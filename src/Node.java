@@ -10,7 +10,7 @@ public interface Node extends Cloneable {
     /**
      * @return A unique String identifier for this node.
      */
-    public String getID();
+    public Integer getID();
 
 
     /**

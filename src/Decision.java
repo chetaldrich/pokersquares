@@ -1,6 +1,5 @@
 import java.util.Random;
 import java.lang.String;
-import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.List;
 import java.util.ArrayList;
@@ -22,11 +21,11 @@ public class Decision implements Node {
     private final String decisionType;
     private final Random randomGenerator = new Random();
     private final PokerSquaresPointSystem system;
-    private final String id;
+    private final Integer id;
     private Node parent;
 
 
-    public Decision(PokerSquaresPointSystem system, String id) {
+    public Decision(PokerSquaresPointSystem system, Integer id) {
         this.rc = randomGenerator.nextBoolean();
         this.decisionType = decideLabel();
         this.system = system;
@@ -78,7 +77,7 @@ public class Decision implements Node {
     /**
      * {@inheritDoc}
      */
-    public String getID() {
+    public Integer getID() {
         return id;
     }
 

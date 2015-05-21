@@ -96,7 +96,7 @@ public class ChromosomeFactory {
      * Creates a clone of the the tree starting from the head node
      */
     public Node cloneTree(Chromosome chromosome, Node head) {
-        Node newHead = new Decision(system, "default");
+        Node newHead = new Decision(system, 1);
         try {
             newHead = (Node) head.clone();
             chromosome.addID(newHead);
@@ -136,7 +136,7 @@ public class ChromosomeFactory {
      */
     public void crossOver() {
         Collections.shuffle(genePool);
-        for (int i = 0; i < LENGTH; i+=2) {
+        for (int i = 0; i < LENGTH; i += 2) {
             breedChromosome(genePool.get(i), genePool.get(i+1));
         }
     }
