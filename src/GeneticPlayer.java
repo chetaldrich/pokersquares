@@ -68,14 +68,14 @@ public class GeneticPlayer implements PokerSquaresPlayer {
 
 
     public static void main(String[] args) {
-        PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmericanPointSystem();
+        PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmeritishPointSystem();
         System.out.println(system);
 
         GeneticPlayer gp = new GeneticPlayer();
         PokerSquares ps = new PokerSquares(gp, system);
-        
+
         ps.playSequence(50,0,false);
-        
+
     }
 
 }

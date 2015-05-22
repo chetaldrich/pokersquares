@@ -19,13 +19,17 @@ public class Chromosome implements PokerSquaresPlayer {
         this.identifiers = new ArrayList<Integer>();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPointSystem(PokerSquaresPointSystem system, long millis) {
         this.system = system;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init() {
         // reset game board
@@ -36,6 +40,9 @@ public class Chromosome implements PokerSquaresPlayer {
         numPlays = 0;
     }
 
+    /**
+     * Creates a beginning tree with three nodes for this tree.
+     */
     public void createChromosome() {
         int id1 = createID();
         int id2 = createID();
@@ -51,16 +58,26 @@ public class Chromosome implements PokerSquaresPlayer {
         this.setHead(gene);
     }
 
+
+    /**
+     * Sets the head of the tree for this chromosome to this node.
+     */
     public void setHead(Node head) {
         headNode = head;
     }
 
 
+    /**
+     * Returns the head of this node.
+     * @return Node object representing the root of the tree.
+     */
     public Node getHead() {
         return headNode;
     }
 
-
+    /**
+     * Mutates a random node in this chromosome.
+     */
     public void mutate() {
         int index = randomGenerator.nextInt(this.identifiers.size());
         Integer selectedID = this.identifiers.get(index);
@@ -138,6 +155,12 @@ public class Chromosome implements PokerSquaresPlayer {
     }
 
 
+    /**
+     * Finds a node in the tree and returns the node.
+     * @param Node root of the tree
+     * @param Integer id value for the node
+     * @return Node object
+     */
     private Node findNode(Node node, Integer id) {
         Deque<Node> a = new ArrayDeque<Node>();
         a.addLast(node);
@@ -156,6 +179,14 @@ public class Chromosome implements PokerSquaresPlayer {
         throw new NullPointerException("Node not found.");
     }
 
+
+    /**
+     * A helper function for determining the depth of a particular node.
+     * @param node: the root of the tree
+     * @param id: the id number of the desired node in the tree
+     * @param depth: recursive depth parameter
+     * @return integer depth of the node in the tree
+     */
     private int getDepthUtil(Node node, Integer id, int depth) {
         if (node == null) {
             return 0;
@@ -174,31 +205,54 @@ public class Chromosome implements PokerSquaresPlayer {
         return downlevel;
     }
 
-
+    /**
+     * Determines the depth of a particular node.
+     * @param node: the root of the tree
+     * @param id: the id number of the desired node in the tree
+     * @return integer depth of the node in the tree
+     */
     public int getDepth(Node node, int id) {
         return getDepthUtil(node, id, 1);
     }
 
 
+    /**
+     * Creates an id and returns it.
+     * @return Integer id number
+     */
     public static int createID() {
         return idGenerator.getAndIncrement();
     }
 
 
+    /**
+     * Adds an id number to the Chromosome instance.
+     * @param Node node: the node from which to take the id
+     */
     public void addID(Node node) {
         this.identifiers.add(node.getID());
     }
 
+
+    /**
+     * Removes an id number from the Chromosome instance.
+     * @param Node node: the node from which to get the id to remove
+     */
     public void removeID(Node node) {
         this.identifiers.remove(node.getID());
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     private void addToGrid(Card card, int[] playPosition) {
         grid[playPosition[0]][playPosition[1]] = card;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int[] getPlay(Card card, long millisRemaining) {
         int[] playPosition = headNode.evaluate(grid,card);
@@ -206,7 +260,9 @@ public class Chromosome implements PokerSquaresPlayer {
         return playPosition;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return "Chromosome";
