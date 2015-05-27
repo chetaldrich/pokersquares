@@ -3,7 +3,7 @@ import java.util.*;
 public class GeneticPlayer implements PokerSquaresPlayer {
 
     private final int SIZE = 5; // grid dimension
-    private final double SETUP_PROP = 0.1;
+    private final double SETUP_PROP = 0.2;
     private Card[][] grid = new Card[SIZE][SIZE]; // Card grid
     private int numPlays = 0; // number of Cards played into the grid so far
     private PokerSquaresPointSystem system; // point system
@@ -22,7 +22,10 @@ public class GeneticPlayer implements PokerSquaresPlayer {
         ChromosomeFactory chrome = new ChromosomeFactory(system);
         chrome.createChromosomes();
         long startTime = System.currentTimeMillis();
+        int count = 1;
         while((System.currentTimeMillis()-startTime) < SETUP_PROP*millis) {
+            System.out.println("Generation: " + count);
+            count++;
             chrome.selectNextGeneration();
             chrome.mutateAll();
             chrome.crossOver();
@@ -68,7 +71,7 @@ public class GeneticPlayer implements PokerSquaresPlayer {
 
 
     public static void main(String[] args) {
-        PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmeritishPointSystem();
+        PokerSquaresPointSystem system = PokerSquaresPointSystem.getAmericanPointSystem();
         System.out.println(system);
 
         GeneticPlayer gp = new GeneticPlayer();

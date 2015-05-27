@@ -2,8 +2,8 @@ import java.util.*;
 
 public class ChromosomeFactory {
 
-    private final int LENGTH = 100;
-    private final int NON_SURVIVORS = 10;
+    private final int LENGTH = 250;
+    private final int NON_SURVIVORS = 50;
     private ArrayList<Chromosome> genePool;
     private PokerSquaresPointSystem system;
     private Random randomGenerator = new Random();
@@ -76,15 +76,18 @@ public class ChromosomeFactory {
             int winnerInd = fitnesses[i][1];
             int replaceInd = fitnesses[LENGTH - (i + 1)][1];
 
-            Chromosome clone = new Chromosome();
-            clone.setPointSystem(system, 0);
+            float replace = randomGenerator.nextFloat();
+            if (replace < (1.0-1.0/(i+1))) {
+                Chromosome clone = new Chromosome();
+                clone.setPointSystem(system, 0);
 
-            Node replacement =
-            cloneTree(clone, genePool.get(winnerInd).getHead());
+                Node replacement =
+                cloneTree(clone, genePool.get(winnerInd).getHead());
 
-            clone.setHead(replacement);
+                clone.setHead(replacement);
 
-            genePool.set(replaceInd, clone);
+                genePool.set(replaceInd, clone);
+            }
         }
 
         Chromosome winner = genePool.get(fitnesses[0][1]);

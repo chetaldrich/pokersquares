@@ -15,6 +15,7 @@ public class Rule implements Node {
     private int rc;
     private int pointThresh;
     private Integer id;
+    private String ruleType;
 
 
     public Rule(PokerSquaresPointSystem system, Integer id) {
@@ -26,7 +27,7 @@ public class Rule implements Node {
         int[] scores = system.getScoreTable();
         Arrays.sort(scores);
         // threshold is the median score
-        pointThresh = scores[scores.length/2];
+        pointThresh = scores[scores.length/4];
 
         randomGenerator = new Random();
         // determine if checking row or column
@@ -36,6 +37,30 @@ public class Rule implements Node {
         // which row or column to check
         int randInt = randomGenerator.nextInt(5);
         rc = randInt;
+
+        ruleType = decideType();
+    }
+
+    /**
+     * @return A String that determines the type of this rule.
+     */
+    private String decideType() {
+
+        int method =  randomGenerator.nextInt(3) + 1;
+        String label;
+
+            switch (method) {
+                case 1: label = "place in hand";
+                        break;
+                case 2: label = "straight";
+                        break;
+                case 3: label = "flush";
+                        break;
+                default: throw new IllegalStateException(
+                                   "Invalid integer: not in 0-8 (Decision)");
+            }
+
+        return label;
     }
 
 
@@ -87,7 +112,7 @@ public class Rule implements Node {
     public String getLabel() {
         String rowOrCol = row ? "row" : "column";
         String rcnum = Integer.toString(rc);
-        String label = "Check the " + rowOrCol + " ranked " + rcnum;
+        String label = "Check for " + ruleType + " in the " + rowOrCol + " ranked " + rcnum;
         return label;
     }
 
@@ -166,8 +191,8 @@ public class Rule implements Node {
         int handScore = system.getHandScore(potentialHand);
         int suitScore = suitCheck(potentialHand);
         int seqScore = seqCheck(potentialHand);
-        if (suitScore > handScore) handScore = suitScore;
-        else if (seqScore > handScore) handScore = seqScore;
+        if (ruleType == "flush") handScore = suitScore;
+        else if (ruleType == "straight") handScore = seqScore;
         return (handScore > pointThresh);
     }
 
@@ -201,8 +226,8 @@ public class Rule implements Node {
         int handScore = system.getHandScore(potentialHand);
         int suitScore = suitCheck(potentialHand);
         int seqScore = seqCheck(potentialHand);
-        if (suitScore > handScore) handScore = suitScore;
-        else if (seqScore > handScore) handScore = seqScore;
+        if (ruleType == "flush") handScore = suitScore;
+        else if (ruleType == "straight") handScore = seqScore;
         return (handScore > pointThresh);
     }
 
