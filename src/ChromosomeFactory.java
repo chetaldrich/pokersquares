@@ -91,6 +91,12 @@ public class ChromosomeFactory {
         }
 
         Chromosome winner = genePool.get(fitnesses[0][1]);
+        int[] scares = new int[LENGTH];
+        for (int i=0; i<LENGTH; i++) {
+            scares[i] = fitnesses[i][0];
+        }
+        int aardvark = average(scares);
+        System.out.println("Best: " + fitnesses[0][0] + " Worst: " + fitnesses[LENGTH-1][0] + " Average: " + aardvark);
         return winner;
 
     }

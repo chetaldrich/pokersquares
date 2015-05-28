@@ -222,7 +222,7 @@ public class FakePokerSquares {
 			scoreStdDev += diff * diff;
 		}
 		scoreStdDev = Math.sqrt(scoreStdDev / numGames);
-		
+		// System.out.printf("Score Mean: %f, Standard Deviation: %f, Minimum: %d, Maximum: %d\n", scoreMean, scoreStdDev, min, max);
 		return scores;
 	}
 	
