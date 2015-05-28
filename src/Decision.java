@@ -19,6 +19,7 @@ public class Decision implements Node {
      * Stores which function to use for decision.
      */
     private final String decisionType;
+    private final int HAND_SIZE = 5;
     private final Random randomGenerator = new Random();
     private final PokerSquaresPointSystem system;
     private final Integer id;
@@ -86,7 +87,9 @@ public class Decision implements Node {
      * Counts the cards in the row/column that fit a certain criterion
      * @return A list of counts sorted by the criterion in rows/columns.
      */
-    private int[][] countCards(Card[][] grid, Predicate<Card> filter) {
+    private int[][] countCards(Card[][] grid,
+                               Predicate<Card> filter,
+                               boolean rc) {
 
         int[][] counts = new int[5][2];
         // make the second entry in each count the row/col number
@@ -175,7 +178,7 @@ public class Decision implements Node {
      */
     private int[] leastCards(Card[][] grid, Card drawnCard) {
         Predicate<Card> isNotCard = (Card card) -> card == null;
-        int[][] preferenceList = countCards(grid, isNotCard);
+        int[][] preferenceList = countCards(grid, isNotCard, this.rc);
         return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
 
@@ -187,7 +190,7 @@ public class Decision implements Node {
      */
     private int[] mostCards(Card[][] grid, Card drawnCard) {
         Predicate<Card> isCard = (Card card) -> card != null;
-        int[][] preferenceList = countCards(grid, isCard);
+        int[][] preferenceList = countCards(grid, isCard, this.rc);
         return placeCard(grid, preferenceList, drawnCard, this.rc);
     }
 
@@ -203,7 +206,7 @@ public class Decision implements Node {
         Predicate<Card> isSameSuit =
             (Card card) ->
                 card == null ? false : card.getSuit() == currentSuit;
-        int[][] preferenceList = countCards(grid, isSameSuit);
+        int[][] preferenceList = countCards(grid, isSameSuit, this.rc);
         // NOTE: might be worth it to play in a row/col that is empty
         // over a random row to build flushes.
         return placeCard(grid, preferenceList, drawnCard, this.rc);
@@ -221,7 +224,7 @@ public class Decision implements Node {
         Predicate<Card> isSameRank =
             (Card card) ->
                 card == null ? false : card.getRank() == currentRank;
-        int[][] preferenceList = countCards(grid, isSameRank);
+        int[][] preferenceList = countCards(grid, isSameRank, this.rc);
         // NOTE: might be worth it to play in a row/col that is empty
         // over a random row to build 3 and 4 of a kind.
         return placeCard(grid, preferenceList, drawnCard, this.rc);
@@ -236,8 +239,112 @@ public class Decision implements Node {
      */
     private int[] extendStraight(Card[][] grid, Card drawnCard) {
         // TODO: implement
-        int[] position = {1,1};
-        return position;
+        int[][] preferenceList = new int[5][2];
+        int[][] rankGrid = new int[5][5];
+
+        // make the second entry in each count the row/col number
+        for (int i = 0; i < 5; i++) {
+            preferenceList[i][1] = i;
+        }
+
+        // make the grid with the ranks of the items
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+                if (grid[row][col] == null) {
+                    rankGrid[row][col] = -1;
+                } else {
+                    rankGrid[row][col] = grid[row][col].getRank();
+                }
+            }
+        }
+
+
+        boolean placed = false;
+        // add the drawnCard to the lists and sort the lists.
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+                if (rankGrid[row][col] == -1) {
+                    // if you find a place to put the card,
+                    // place it into the row.
+                    rankGrid[row][col] = drawnCard.getRank();
+                    placed = true;
+                    break;
+                } else {
+                    continue;
+                }
+            }
+            // if the row was full set the preferenceList to -1
+            // so we don’t attempt to place a card in that row.
+            if (!placed) {
+                preferenceList[row][0] = -1;
+            }
+            // reset the boolean and start for next row.
+            placed = false;
+        }
+
+
+        // go through each row and sort.
+        for (int row = 0; row < 5; row++) {
+            Arrays.sort(rankGrid[row]);
+        }
+
+
+        int mostRecentRun = 0;
+        int seqCount = 0;
+        // check each row for straights.
+        for (int row = 0; row < 5; row++) {
+            for (int col = 0; col < 5; col++) {
+                // assuming there is a card there,
+                if (rankGrid[row][col] != 0) {
+                    // if this card is one greater than the previous run,
+                    if (rankGrid[row][col] - 1 == mostRecentRun
+                        && mostRecentRun != 0) {
+                        // make that the most recent card in the run, and
+                        mostRecentRun = rankGrid[row][col];
+                        // increment the size of the sequence.
+                        seqCount++;
+                    } else {
+                        // otherwise, reset.
+                        mostRecentRun = rankGrid[row][col];
+                        seqCount = 0;
+                    }
+                }
+            }
+            // Assign the sequence size unless the row is full.
+            preferenceList[row][0] = (preferenceList[row][0] != -1) ? seqCount : -1;
+        }
+
+        // compares 2 dimensional int arrays
+        Arrays.sort(preferenceList, new Comparator<int[]>() {
+        @Override
+        public int compare(final int[] item1, final int[] item2) {
+            // randomize if the values are the same
+            if (item2[0] - item1[0] == 0) {
+                return randomGenerator.nextBoolean() ? 1 : -1;
+            }
+            // otherwise, return the normal comparator
+            return item2[0] - item1[0];
+        }
+        });
+
+        Predicate<Card> isNotCard = (Card card) -> card == null;
+        int[][] leastCardsList = countCards(grid, isNotCard, true);
+        Predicate<Card> isSameRank =
+                        (Card card) ->
+                        card == null ? false : card.getRank() == drawnCard.getRank();
+        int[][] sameRankList = countCards(grid, isSameRank, true);
+
+
+        if (preferenceList[0][0] == preferenceList[1][0] &&
+            preferenceList[1][0] == preferenceList[2][0]) {
+            return placeCard(grid, leastCardsList, drawnCard, true);
+        } else if (preferenceList[0][0] == preferenceList[1][0]) {
+            return placeCard(grid, sameRankList, drawnCard, true);
+        }
+
+
+        return placeCard(grid, preferenceList, drawnCard, true);
+
     }
 
 
@@ -299,9 +406,8 @@ public class Decision implements Node {
                 return mostSuit(grid, drawnCard);
             case "mostRank":
                 return mostRank(grid, drawnCard);
-            // case "extendStraight":
-            //     // needs to be implemented
-            //     return extendStraight(grid, drawnCard);
+            case "extendStraight":
+                return extendStraight(grid, drawnCard);
             case "placeLeft":
                 return placeLeft(grid, drawnCard);
             case "placeTop":

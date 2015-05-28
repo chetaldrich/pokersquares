@@ -57,7 +57,7 @@ public class Rule implements Node {
                 case 3: label = "flush";
                         break;
                 default: throw new IllegalStateException(
-                                   "Invalid integer: not in 0-8 (Decision)");
+                                   "Invalid integer: not in 0-3 (Rule)");
             }
 
         return label;

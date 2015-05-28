@@ -2,7 +2,7 @@ import java.util.*;
 
 public class ChromosomeFactory {
 
-    private final int LENGTH = 250;
+    private final int LENGTH = 300;
     private final int NON_SURVIVORS = 50;
     private ArrayList<Chromosome> genePool;
     private PokerSquaresPointSystem system;
@@ -72,6 +72,7 @@ public class ChromosomeFactory {
             }
         });
 
+
         for (int i = 0; i < NON_SURVIVORS; i++) {
             int winnerInd = fitnesses[i][1];
             int replaceInd = fitnesses[LENGTH - (i + 1)][1];
@@ -85,6 +86,10 @@ public class ChromosomeFactory {
                 cloneTree(clone, genePool.get(winnerInd).getHead());
 
                 clone.setHead(replacement);
+
+                // just for fun
+                clone.mutate();
+                // clone.mutate();
 
                 genePool.set(replaceInd, clone);
             }
