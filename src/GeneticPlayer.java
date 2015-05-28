@@ -3,7 +3,7 @@ import java.util.*;
 public class GeneticPlayer implements PokerSquaresPlayer {
 
     private final int SIZE = 5; // grid dimension
-    private final double SETUP_PROP = 0.2;
+    private final double SETUP_PROP = 0.8;
     private Card[][] grid = new Card[SIZE][SIZE]; // Card grid
     private int numPlays = 0; // number of Cards played into the grid so far
     private PokerSquaresPointSystem system; // point system
@@ -26,7 +26,7 @@ public class GeneticPlayer implements PokerSquaresPlayer {
         while((System.currentTimeMillis()-startTime) < SETUP_PROP*millis) {
             System.out.println("Generation: " + count);
             count++;
-            chrome.selectNextGeneration();
+            Chromosome best = chrome.selectNextGeneration();
             chrome.mutateAll();
             chrome.crossOver();
         }
