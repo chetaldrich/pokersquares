@@ -87,9 +87,8 @@ public class ChromosomeFactory {
 
                 clone.setHead(replacement);
 
-                // just for fun
                 clone.mutate();
-                // clone.mutate();
+                clone.mutate();
 
                 genePool.set(replaceInd, clone);
             }
@@ -137,7 +136,7 @@ public class ChromosomeFactory {
         float mutation;
         for (int i = 0; i < LENGTH; i++) {
             mutation = randomGenerator.nextFloat();
-            if (mutation <= .3) {
+            if (mutation <= .7) {
                 genePool.get(i).mutate();
             }
         }
