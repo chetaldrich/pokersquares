@@ -16,6 +16,7 @@ hs_err_pid*
 
 # Documentation available on the contest website:
 doc/
+out/
 
 # .idea
 .idea/
